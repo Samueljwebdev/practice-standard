@@ -25,7 +25,7 @@ create table public.practices (
   website text,
   phone text,
   stripe_customer_id text,
-  subscription_status text default 'inactive' check (
+  subscription_status text not null default 'inactive' check (
     subscription_status in ('inactive', 'active', 'cancelled', 'past_due')
   ),
   subscription_end timestamptz,
@@ -50,7 +50,7 @@ create table public.candidates (
   region text,
   bio text,
   cv_url text,
-  available boolean default true,
+  available boolean not null default true,
   years_experience integer,
   created_at timestamptz default now()
 );
@@ -61,11 +61,14 @@ create policy "Candidates updatable by owner" on public.candidates
   for update using (auth.uid() = user_id);
 create policy "Candidates insertable by owner" on public.candidates
   for insert with check (auth.uid() = user_id);
-create policy "Practices can read candidates" on public.candidates
+-- Practices can only read candidates who have applied to one of their jobs
+create policy "Practices can read applicant candidates" on public.candidates
   for select using (
     exists (
-      select 1 from public.profiles
-      where id = auth.uid() and role = 'practice'
+      select 1 from public.applications a
+      join public.jobs j on j.id = a.job_id
+      join public.practices p on p.id = j.practice_id
+      where a.candidate_id = candidates.id and p.user_id = auth.uid()
     )
   );
 
@@ -83,8 +86,8 @@ create table public.jobs (
   description text not null,
   requirements text,
   slug text unique not null,
-  status text default 'draft' check (status in ('draft', 'active', 'expired', 'filled')),
-  payment_status text default 'unpaid' check (payment_status in ('unpaid', 'paid')),
+  status text not null default 'draft' check (status in ('draft', 'active', 'expired', 'filled')),
+  payment_status text not null default 'unpaid' check (payment_status in ('unpaid', 'paid')),
   published_at timestamptz,
   expires_at timestamptz,
   created_at timestamptz default now()
@@ -120,7 +123,7 @@ create table public.applications (
   job_id uuid references public.jobs(id) on delete cascade not null,
   candidate_id uuid references public.candidates(id) on delete cascade not null,
   cover_letter text,
-  status text default 'pending' check (status in ('pending', 'viewed', 'shortlisted', 'rejected')),
+  status text not null default 'pending' check (status in ('pending', 'viewed', 'shortlisted', 'rejected')),
   created_at timestamptz default now(),
   unique(job_id, candidate_id)
 );
