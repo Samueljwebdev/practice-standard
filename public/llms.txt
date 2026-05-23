@@ -1,0 +1,67 @@
+# The Practice Standard
+
+> The UK's specialist job board for regulated private healthcare practice roles. Connecting practices with verified professionals across veterinary, optometry, aesthetics, private medical, physiotherapy, and allied health disciplines.
+
+## What We Do
+
+The Practice Standard is a two-sided marketplace:
+- **Practices** post job listings (£149/listing or £249/month subscription)
+- **Professionals** search and apply for free — always
+
+We focus exclusively on private practice roles in regulated healthcare disciplines, where professional registration is typically required.
+
+## Disciplines Covered
+
+- Veterinary (RCVS-registered vets and vet nurses)
+- Optometry & Ophthalmology (GOC-registered optometrists)
+- Aesthetics & MedSpa (aesthetic doctors, aesthetic nurses, nurse injectors, skin therapists)
+- Private Medical (private GPs, consultants, theatre nurses, sonographers, radiographers)
+- Allied Health (HCPC-registered physiotherapists, osteopaths, chiropractors, podiatrists, OTs, SLTs, dietitians)
+- Mental Health (BABCP-accredited CBT therapists, BACP-accredited counsellors)
+- Operations & Management (practice managers, CQC compliance leads, HR managers)
+- Dentistry (all GDC-registered roles across clinical and support functions)
+
+## Pricing
+
+### Pay-Per-Listing
+- **£149 + VAT** per job listing
+- 30-day active period
+- Applications managed in dashboard
+- Suitable for occasional hiring
+
+### Practice Pro (Subscription)
+- **£249 + VAT** per month
+- Unlimited job listings
+- Priority listing placement
+- Suitable for practices hiring regularly or building a team
+
+### For Professionals
+- **Free** — always
+- No registration fee, no application fee
+- Account required to apply
+
+## Key URLs
+
+- Homepage: https://thepracticestandard.co.uk
+- Browse jobs: https://thepracticestandard.co.uk/jobs
+- Post a job / register: https://thepracticestandard.co.uk/auth/register
+- Pricing: https://thepracticestandard.co.uk/pricing
+- Terms of Service: https://thepracticestandard.co.uk/terms
+- Privacy Policy: https://thepracticestandard.co.uk/privacy
+- Sitemap: https://thepracticestandard.co.uk/sitemap.xml
+
+## Profession Pages
+
+We have programmatic landing pages for all 88 professions we cover, at:
+https://thepracticestandard.co.uk/roles/{profession-slug}
+
+And region-specific pages at:
+https://thepracticestandard.co.uk/roles/{profession-slug}/{region-slug}
+
+UK regions covered: London, South East, South West, East of England, East Midlands, West Midlands, Yorkshire, North West, North East, Scotland, Wales, Northern Ireland.
+
+## About
+
+The Practice Standard is based in the United Kingdom and serves the UK private healthcare market exclusively. We are not a general job board — we focus specifically on the quality of hire for regulated practice settings.
+
+Contact: hello@thepracticestandard.co.uk

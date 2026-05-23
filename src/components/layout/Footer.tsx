@@ -38,9 +38,10 @@ export function Footer() {
           <p className="text-xs text-white/30">
             © {new Date().getFullYear()} The Practice Standard. All rights reserved.
           </p>
-          <p className="text-xs text-mint/60 italic">
-            Where better practices hire.
-          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/terms" className="text-xs text-white/30 hover:text-white/60 transition-colors">Terms</Link>
+            <Link href="/privacy" className="text-xs text-white/30 hover:text-white/60 transition-colors">Privacy</Link>
+          </div>
         </div>
       </div>
     </footer>

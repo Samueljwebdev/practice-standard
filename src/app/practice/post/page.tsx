@@ -3,12 +3,12 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { generateJobSlug } from "@/lib/utils/slug"
-import { PROFESSIONS, JOB_TYPES, UK_REGIONS, LISTING_PRICE_GBP } from "@/lib/constants"
+import { PROFESSIONS, PROFESSION_CATEGORIES, JOB_TYPES, UK_REGIONS, LISTING_PRICE_GBP } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Practice } from "@/types/database"
 
@@ -107,7 +107,14 @@ export default function PostJobPage() {
                 <Select onValueChange={v => set("profession", v as string)}>
                   <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
                   <SelectContent>
-                    {PROFESSIONS.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}
+                    {PROFESSION_CATEGORIES.map(cat => (
+                      <SelectGroup key={cat}>
+                        <SelectLabel>{cat}</SelectLabel>
+                        {PROFESSIONS.filter(p => p.category === cat).map(p => (
+                          <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

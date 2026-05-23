@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
 import { PROFESSIONS } from "@/lib/constants"
+import { professionToSlug, getBaseUrl } from "@/lib/seo"
 import { HomeHero } from "@/components/home/HomeHero"
 import { AnimateIn } from "@/components/ui/AnimateIn"
 
@@ -12,6 +13,8 @@ export default async function HomePage() {
     .select("*", { count: "exact", head: true })
     .eq("status", "active")
     .eq("payment_status", "paid")
+
+  const base = getBaseUrl()
 
   return (
     <>
@@ -28,7 +31,7 @@ export default async function HomePage() {
               {PROFESSIONS.map(p => (
                 <Link
                   key={p.value}
-                  href={`/jobs?profession=${p.value}`}
+                  href={`/roles/${professionToSlug(p.value)}`}
                   className="px-4 py-2 text-sm bg-off-white border border-border rounded-full text-navy hover:bg-teal hover:text-off-white hover:border-teal transition-all duration-200"
                 >
                   {p.label}
@@ -171,6 +174,46 @@ export default async function HomePage() {
           </div>
         </AnimateIn>
       </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": `${base}/#organization`,
+                name: "The Practice Standard",
+                url: base,
+                logo: {
+                  "@type": "ImageObject",
+                  url: `${base}/icon`,
+                  width: 32,
+                  height: 32,
+                },
+                description: "The UK's professional job board for veterinary, optician, aesthetic, physiotherapy, GP and private medical practice roles.",
+                areaServed: { "@type": "Country", name: "United Kingdom" },
+              },
+              {
+                "@type": "WebSite",
+                "@id": `${base}/#website`,
+                url: base,
+                name: "The Practice Standard",
+                publisher: { "@id": `${base}/#organization` },
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: `${base}/jobs?q={search_term_string}`,
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </>
   )
 }

@@ -2,12 +2,11 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { PROFESSIONS, UK_REGIONS } from "@/lib/constants"
+import { PROFESSIONS, PROFESSION_CATEGORIES, UK_REGIONS } from "@/lib/constants"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function CandidateProfilePage() {
   const router = useRouter()
@@ -45,6 +44,7 @@ export default function CandidateProfilePage() {
       }
     }
     load()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function setField(field: string, value: string) {
@@ -72,58 +72,71 @@ export default function CandidateProfilePage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-10">
-      <Card>
-        <CardHeader><CardTitle>Your profile</CardTitle></CardHeader>
-        <CardContent>
-          <form onSubmit={handleSave} className="space-y-4">
+      <div className="mb-8">
+        <p className="text-xs font-semibold text-teal uppercase tracking-[0.18em] mb-1">Account</p>
+        <h1 className="text-2xl font-bold text-navy">Your profile</h1>
+        <p className="text-brand-slate text-sm mt-1">Keep this up to date — practices see it when you apply.</p>
+      </div>
+      <div className="bg-white border border-border rounded-2xl p-8">
+        <form onSubmit={handleSave} className="space-y-5">
+          <div>
+            <Label className="text-navy/80 text-sm font-medium">Full name</Label>
+            <Input value={form.full_name} onChange={e => setField("full_name", e.target.value)} required className="mt-1" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Full name</Label>
-              <Input value={form.full_name} onChange={e => setField("full_name", e.target.value)} required />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Profession</Label>
-                <Select value={form.profession} onValueChange={v => setField("profession", v as string)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {PROFESSIONS.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Registration number</Label>
-                <Input placeholder="GDC / RCVS / GOC..." value={form.registration_number} onChange={e => setField("registration_number", e.target.value)} />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Town / City</Label>
-                <Input placeholder="Bristol" value={form.location} onChange={e => setField("location", e.target.value)} />
-              </div>
-              <div>
-                <Label>Region</Label>
-                <Select value={form.region} onValueChange={v => setField("region", v as string)}>
-                  <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
-                  <SelectContent>
-                    {UK_REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
+              <Label className="text-navy/80 text-sm font-medium">Profession</Label>
+              <Select value={form.profession} onValueChange={v => setField("profession", v as string)}>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PROFESSION_CATEGORIES.map(cat => (
+                    <SelectGroup key={cat}>
+                      <SelectLabel>{cat}</SelectLabel>
+                      {PROFESSIONS.filter(p => p.category === cat).map(p => (
+                        <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <Label>Years of experience</Label>
-              <Input type="number" min="0" max="50" value={form.years_experience} onChange={e => setField("years_experience", e.target.value)} />
+              <Label className="text-navy/80 text-sm font-medium">Registration number</Label>
+              <Input placeholder="GDC / RCVS / GOC…" value={form.registration_number} onChange={e => setField("registration_number", e.target.value)} className="mt-1" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label className="text-navy/80 text-sm font-medium">Town / City</Label>
+              <Input placeholder="Bristol" value={form.location} onChange={e => setField("location", e.target.value)} className="mt-1" />
             </div>
             <div>
-              <Label>Bio (optional)</Label>
-              <Textarea rows={4} placeholder="A brief summary of your experience and what you're looking for..." value={form.bio} onChange={e => setField("bio", e.target.value)} />
+              <Label className="text-navy/80 text-sm font-medium">Region</Label>
+              <Select value={form.region} onValueChange={v => setField("region", v as string)}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Select…" /></SelectTrigger>
+                <SelectContent>
+                  {UK_REGIONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
-            <button type="submit" className="w-full bg-slate-900 text-white text-sm py-2.5 rounded-md hover:bg-slate-700 transition-colors disabled:opacity-50" disabled={loading}>
-              {saved ? "Saved!" : loading ? "Saving..." : "Save profile"}
-            </button>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+          <div>
+            <Label className="text-navy/80 text-sm font-medium">Years of experience</Label>
+            <Input type="number" min="0" max="50" value={form.years_experience} onChange={e => setField("years_experience", e.target.value)} className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-navy/80 text-sm font-medium">Bio <span className="text-brand-slate font-normal">(optional)</span></Label>
+            <Textarea rows={4} placeholder="A brief summary of your experience and what you're looking for…" value={form.bio} onChange={e => setField("bio", e.target.value)} className="mt-1" />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-teal text-off-white py-2.5 rounded-full text-sm font-semibold hover:bg-teal/90 transition-colors disabled:opacity-60"
+          >
+            {saved ? "Saved!" : loading ? "Saving…" : "Save profile"}
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

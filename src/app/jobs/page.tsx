@@ -20,18 +20,21 @@ async function JobList({ searchParams }: { searchParams: Awaited<PageProps["sear
   if (searchParams.profession) query = query.eq("profession", searchParams.profession)
   if (searchParams.region) query = query.eq("region", searchParams.region)
   if (searchParams.type) query = query.eq("job_type", searchParams.type)
-  if (searchParams.q) {
-    query = query.textSearch("title", searchParams.q, { type: "websearch" })
-  }
+  if (searchParams.q) query = query.textSearch("title", searchParams.q, { type: "websearch" })
 
   const { data: jobs } = await query.limit(50)
 
   if (!jobs?.length) {
-    return <p className="text-slate-500 text-center py-16">No jobs found. Try adjusting your filters.</p>
+    return (
+      <div className="bg-white border border-border rounded-2xl p-12 text-center mt-6">
+        <p className="text-navy font-semibold mb-2">No roles found</p>
+        <p className="text-brand-slate text-sm">Try adjusting your filters or check back soon.</p>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 mt-6">
       {jobs.map(job => <JobCard key={job.id} job={job as unknown as Job} />)}
     </div>
   )
@@ -41,16 +44,17 @@ export default async function JobsPage({ searchParams }: PageProps) {
   const resolvedParams = await searchParams
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold text-navy mb-2">Healthcare Jobs UK</h1>
-      <p className="text-brand-slate mb-6">Dental, veterinary, optician, aesthetic, physio and GP roles.</p>
+      <div className="mb-6">
+        <p className="text-xs font-semibold text-teal uppercase tracking-[0.18em] mb-2">Open roles</p>
+        <h1 className="text-2xl font-bold text-navy">Healthcare Jobs UK</h1>
+        <p className="text-brand-slate text-sm mt-1">Dental, veterinary, optician, aesthetic, physio and GP roles.</p>
+      </div>
       <Suspense fallback={null}>
         <JobFilters />
       </Suspense>
-      <div className="mt-6">
-        <Suspense fallback={<p className="text-slate-500">Loading jobs...</p>}>
-          <JobList searchParams={resolvedParams} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<p className="text-brand-slate text-sm mt-6">Loading jobs…</p>}>
+        <JobList searchParams={resolvedParams} />
+      </Suspense>
     </div>
   )
 }

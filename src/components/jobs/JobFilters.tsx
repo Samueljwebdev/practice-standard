@@ -1,8 +1,8 @@
 "use client"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { PROFESSIONS, JOB_TYPES, UK_REGIONS } from "@/lib/constants"
+import { PROFESSIONS, PROFESSION_CATEGORIES, JOB_TYPES, UK_REGIONS } from "@/lib/constants"
 
 export function JobFilters() {
   const router = useRouter()
@@ -31,7 +31,14 @@ export function JobFilters() {
         <SelectTrigger className="w-48"><SelectValue placeholder="Profession" /></SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All professions</SelectItem>
-          {PROFESSIONS.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}
+          {PROFESSION_CATEGORIES.map(cat => (
+            <SelectGroup key={cat}>
+              <SelectLabel>{cat}</SelectLabel>
+              {PROFESSIONS.filter(p => p.category === cat).map(p => (
+                <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+              ))}
+            </SelectGroup>
+          ))}
         </SelectContent>
       </Select>
       <Select defaultValue={searchParams.get("region") ?? "all"} onValueChange={v => update("region", v as string)}>
