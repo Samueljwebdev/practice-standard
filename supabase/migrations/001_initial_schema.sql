@@ -61,16 +61,6 @@ create policy "Candidates updatable by owner" on public.candidates
   for update using (auth.uid() = user_id);
 create policy "Candidates insertable by owner" on public.candidates
   for insert with check (auth.uid() = user_id);
--- Practices can only read candidates who have applied to one of their jobs
-create policy "Practices can read applicant candidates" on public.candidates
-  for select using (
-    exists (
-      select 1 from public.applications a
-      join public.jobs j on j.id = a.job_id
-      join public.practices p on p.id = j.practice_id
-      where a.candidate_id = candidates.id and p.user_id = auth.uid()
-    )
-  );
 
 -- Jobs
 create table public.jobs (
@@ -180,3 +170,15 @@ create policy "Practice reads own purchases" on public.job_purchases
 -- Full-text search index on jobs
 create index jobs_search_idx on public.jobs
   using gin(to_tsvector('english', title || ' ' || description || ' ' || coalesce(city, '')));
+
+-- Practices can only read candidates who have applied to one of their jobs
+-- (placed after applications table is created to avoid forward reference)
+create policy "Practices can read applicant candidates" on public.candidates
+  for select using (
+    exists (
+      select 1 from public.applications a
+      join public.jobs j on j.id = a.job_id
+      join public.practices p on p.id = j.practice_id
+      where a.candidate_id = candidates.id and p.user_id = auth.uid()
+    )
+  );
