@@ -1,6 +1,8 @@
 import { Resend } from "resend"
 
-export const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 export async function sendApplicationNotification({
   practiceEmail,
@@ -15,6 +17,7 @@ export async function sendApplicationNotification({
   candidateName: string
   jobSlug: string
 }) {
+  const resend = getResend()
   await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL!,
     to: practiceEmail,

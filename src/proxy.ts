@@ -5,7 +5,7 @@ const PRACTICE_ROUTES = ["/practice"]
 const CANDIDATE_ROUTES = ["/candidate"]
 const AUTH_ROUTES = ["/auth/login", "/auth/register"]
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
