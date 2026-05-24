@@ -1,6 +1,6 @@
 -- Benchmark leads: captures emails from the salary benchmark lead magnet
 create table public.benchmark_leads (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid default gen_random_uuid() primary key,
   email text not null,
   name text,
   practice_type text,
