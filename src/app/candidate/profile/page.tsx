@@ -14,6 +14,7 @@ export default function CandidateProfilePage() {
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [candidateId, setCandidateId] = useState<string | null>(null)
+  const [isNewProfile, setIsNewProfile] = useState(false)
 
   const [form, setForm] = useState({
     full_name: "",
@@ -32,6 +33,7 @@ export default function CandidateProfilePage() {
       const { data } = await supabase.from("candidates").select("*").eq("user_id", user.id).single()
       if (data) {
         setCandidateId(data.id)
+        if (!data.profession) setIsNewProfile(true)
         setForm({
           full_name: data.full_name ?? "",
           profession: data.profession ?? "",
@@ -67,16 +69,35 @@ export default function CandidateProfilePage() {
     setSaved(true)
     setLoading(false)
     setTimeout(() => setSaved(false), 3000)
-    router.push("/candidate/dashboard")
+    router.push(isNewProfile ? "/jobs" : "/candidate/dashboard")
   }
 
   return (
     <div className="max-w-xl mx-auto px-4 py-10">
       <div className="mb-8">
-        <p className="text-xs font-semibold text-teal uppercase tracking-[0.18em] mb-1">Account</p>
-        <h1 className="text-2xl font-bold text-navy">Your profile</h1>
-        <p className="text-brand-slate text-sm mt-1">Keep this up to date — practices see it when you apply.</p>
+        <p className="text-xs font-semibold text-teal uppercase tracking-[0.18em] mb-1">
+          {isNewProfile ? "One last step" : "Account"}
+        </p>
+        <h1 className="text-2xl font-bold text-navy">
+          {isNewProfile ? "Set up your profile" : "Your profile"}
+        </h1>
+        <p className="text-brand-slate text-sm mt-1">
+          {isNewProfile
+            ? "Practices see this when you apply. Takes under a minute — then browse open roles."
+            : "Keep this up to date — practices see it when you apply."}
+        </p>
       </div>
+
+      {isNewProfile && (
+        <div className="flex items-center gap-3 bg-teal/8 border border-teal/20 rounded-xl px-4 py-3 mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="text-teal shrink-0">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-xs text-teal font-medium">
+            Your account is created. Complete your profile to apply to roles — always free.
+          </p>
+        </div>
+      )}
       <div className="bg-white border border-border rounded-2xl p-8">
         <form onSubmit={handleSave} className="space-y-5">
           <div>
@@ -133,7 +154,7 @@ export default function CandidateProfilePage() {
             disabled={loading}
             className="w-full bg-teal text-off-white py-2.5 rounded-full text-sm font-semibold hover:bg-teal/90 transition-colors disabled:opacity-60"
           >
-            {saved ? "Saved!" : loading ? "Saving…" : "Save profile"}
+            {saved ? "Saved!" : loading ? "Saving…" : isNewProfile ? "Save and browse roles →" : "Save profile"}
           </button>
         </form>
       </div>

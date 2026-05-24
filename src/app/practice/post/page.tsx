@@ -87,19 +87,30 @@ export default function PostJobPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
+
+      {/* Progress strip */}
+      <div className="flex items-center gap-2 mb-6 text-xs text-brand-slate">
+        <span className="font-semibold text-teal">1. Write your listing</span>
+        <span className="h-px w-6 bg-border" />
+        <span>2. Pay £{LISTING_PRICE_GBP}</span>
+        <span className="h-px w-6 bg-border" />
+        <span>3. Go live</span>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle>Post a job</CardTitle>
+          <CardTitle>Post a role</CardTitle>
           <CardDescription>
-            Your listing goes live immediately after payment (£{LISTING_PRICE_GBP}). Active for 30 days.
-            {practice?.subscription_status === "active" && " Included in your subscription — no extra charge."}
+            {practice?.subscription_status === "active"
+              ? "Included in your Practice Pro subscription — post as many roles as you need."
+              : `£${LISTING_PRICE_GBP} + VAT · Active for 30 days · Goes live immediately after payment.`}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <Label>Job title</Label>
-              <Input placeholder="e.g. Dental Hygienist" value={form.title} onChange={e => set("title", e.target.value)} required />
+              <Input placeholder="e.g. Senior Aesthetic Nurse" value={form.title} onChange={e => set("title", e.target.value)} required />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
