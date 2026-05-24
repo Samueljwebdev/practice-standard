@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AnimateIn } from "@/components/ui/AnimateIn"
 import Link from "next/link"
+import { track } from "@/lib/analytics"
 
 const DISCIPLINES = [
   { value: "aesthetic", label: "Aesthetic clinic" },
@@ -48,6 +49,7 @@ export default function SalaryBenchmarkPage() {
       return
     }
 
+    track("benchmark_downloaded", { practice_type: practiceType || "not_specified" })
     setSuccess(true)
     setLoading(false)
   }

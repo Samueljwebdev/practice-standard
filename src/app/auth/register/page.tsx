@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { track } from "@/lib/analytics"
 
 const PRACTICE_TYPES = [
   { value: "aesthetic", label: "Aesthetic clinic" },
@@ -80,6 +81,8 @@ export default function RegisterPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, name, role }),
     }).catch(() => {})
+
+    track("signup_completed", { role, ...(role === "practice" ? { practice_type: practiceType } : {}) })
 
     router.push(role === "practice" ? "/practice/dashboard" : "/candidate/profile")
     router.refresh()

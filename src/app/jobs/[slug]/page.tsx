@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { PROFESSIONS, JOB_TYPES } from "@/lib/constants"
 import { professionToSlug, getBaseUrl } from "@/lib/seo"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { ApplyButton } from "@/components/jobs/ApplyButton"
 import type { Metadata } from "next"
 
 interface Props { params: Promise<{ slug: string }> }
@@ -157,11 +157,7 @@ export default async function JobDetailPage({ params }: Props) {
               Create free account to apply
             </Link>
           ) : candidateId ? (
-            <form action="/api/jobs/apply" method="POST">
-              <input type="hidden" name="jobId" value={job.id} />
-              <input type="hidden" name="candidateId" value={candidateId} />
-              <Button type="submit" className="w-full rounded-full bg-teal hover:bg-teal/90 text-off-white">Apply for this role</Button>
-            </form>
+            <ApplyButton jobId={job.id} candidateId={candidateId} profession={job.profession} />
           ) : (
             <p className="text-sm text-brand-slate text-center">Practice accounts cannot apply for jobs.</p>
           )}

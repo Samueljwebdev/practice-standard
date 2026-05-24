@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { generateJobSlug } from "@/lib/utils/slug"
 import { PROFESSIONS, PROFESSION_CATEGORIES, JOB_TYPES, UK_REGIONS, LISTING_PRICE_GBP } from "@/lib/constants"
+import { track } from "@/lib/analytics"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -82,6 +83,11 @@ export default function PostJobPage() {
       return
     }
 
+    track("checkout_started", {
+      job_id: job.id,
+      profession: form.profession,
+      practice_type: practice?.practice_type ?? "unknown",
+    })
     router.push(`/api/stripe/checkout?jobId=${job.id}`)
   }
 
