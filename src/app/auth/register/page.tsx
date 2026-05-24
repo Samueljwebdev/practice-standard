@@ -35,11 +35,18 @@ export default function RegisterPage() {
     }
     if (role === "practice") {
       await supabase.from("practices").insert({ user_id: data.user.id, name, practice_type: "aesthetic" })
-      router.push("/practice/dashboard")
     } else {
       await supabase.from("candidates").insert({ user_id: data.user.id, full_name: name, profession: "" })
-      router.push("/candidate/profile")
     }
+
+    // Fire welcome email (non-blocking, best-effort)
+    fetch("/api/auth/welcome", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, name, role }),
+    }).catch(() => {})
+
+    router.push(role === "practice" ? "/practice/dashboard" : "/candidate/profile")
     router.refresh()
   }
 

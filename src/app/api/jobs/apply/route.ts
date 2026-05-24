@@ -1,5 +1,5 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
-import { sendApplicationNotification } from "@/lib/resend"
+import { sendApplicationNotification, sendApplicationConfirmation } from "@/lib/resend"
 import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
@@ -68,6 +68,20 @@ export async function POST(request: Request) {
         }).catch(() => {})
       }
     }
+  }
+
+  // Confirm to the candidate that their application was sent
+  if (job) {
+    const practicesRaw = job.practices as unknown
+    const practicesData = Array.isArray(practicesRaw)
+      ? (practicesRaw[0] as Record<string, unknown> | undefined)
+      : (practicesRaw as Record<string, unknown> | null)
+    await sendApplicationConfirmation({
+      candidateEmail: user.email!,
+      candidateName: candidate.full_name,
+      jobTitle: job.title,
+      practiceName: (practicesData?.name as string | undefined) ?? "the practice",
+    }).catch(() => {})
   }
 
   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/candidate/dashboard?notice=applied`, { status: 302 })

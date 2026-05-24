@@ -1,5 +1,6 @@
 import { stripe } from "@/lib/stripe"
 import { createServiceClient } from "@/lib/supabase/server"
+import { sendJobPublishedConfirmation, sendSubscriptionActivated } from "@/lib/resend"
 import { NextResponse } from "next/server"
 import type Stripe from "stripe"
 
@@ -38,6 +39,46 @@ export async function POST(request: Request) {
         stripe_payment_intent_id: session.payment_intent as string,
         amount_pence: session.amount_total ?? 14900,
       })
+
+      // Email practice: job is now live
+      const { data: job } = await supabase
+        .from("jobs")
+        .select("title, slug, expires_at, practices(name, user_id)")
+        .eq("id", jobId)
+        .single()
+      if (job) {
+        const practice = Array.isArray(job.practices) ? job.practices[0] : job.practices as any
+        if (practice?.user_id) {
+          const { data: authUser } = await supabase.auth.admin.getUserById(practice.user_id)
+          if (authUser.user?.email) {
+            await sendJobPublishedConfirmation({
+              practiceEmail: authUser.user.email,
+              practiceName: practice.name ?? "Practice",
+              jobTitle: job.title,
+              jobSlug: job.slug,
+              expiresAt: job.expires_at ?? thirtyDaysFromNow,
+            }).catch(() => {})
+          }
+        }
+      }
+    }
+
+    if (session.mode === "subscription") {
+      // Email practice: Practice Pro activated
+      const { data: practice } = await supabase
+        .from("practices")
+        .select("name, user_id")
+        .eq("id", practiceId)
+        .single()
+      if (practice?.user_id) {
+        const { data: authUser } = await supabase.auth.admin.getUserById(practice.user_id)
+        if (authUser.user?.email) {
+          await sendSubscriptionActivated({
+            practiceEmail: authUser.user.email,
+            practiceName: practice.name ?? "Practice",
+          }).catch(() => {})
+        }
+      }
     }
   }
 
