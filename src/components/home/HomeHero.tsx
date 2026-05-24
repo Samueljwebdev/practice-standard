@@ -8,7 +8,6 @@ const lines = ["The hiring standard", "for modern", "healthcare."]
 export function HomeHero({ count }: { count: number }) {
   return (
     <section className="relative overflow-hidden bg-off-white">
-      {/* Subtle right-side tint */}
       <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-mint/12 to-transparent pointer-events-none" />
 
       <div className="relative max-w-6xl mx-auto px-4 py-16 md:py-24">
@@ -28,7 +27,6 @@ export function HomeHero({ count }: { count: number }) {
               </span>
             </motion.div>
 
-            {/* Headline — each line clips only to its own box, pb prevents descender crop */}
             <h1 className="mb-7 tracking-tight">
               {lines.map((line, i) => (
                 <span key={i} className="block overflow-hidden pb-[0.15em] -mb-[0.15em]">
@@ -59,7 +57,7 @@ export function HomeHero({ count }: { count: number }) {
               transition={{ duration: 0.6, delay: 0.56 }}
               className="text-[15px] text-brand-slate mb-9 max-w-md leading-relaxed"
             >
-              A UK jobs board for dentistry, medical, aesthetics and more. Free for candidates — built for the professions that matter.
+              The UK&apos;s specialist job board for regulated private healthcare practices. Post a role and reach registered professionals — without agency fees.
             </motion.p>
 
             <motion.div
@@ -69,21 +67,21 @@ export function HomeHero({ count }: { count: number }) {
               className="flex flex-wrap gap-3"
             >
               <Link
-                href="/jobs"
+                href="/auth/register"
                 className="bg-teal text-off-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-teal/90 transition-colors shadow-sm"
               >
-                Browse{count > 0 ? ` ${count}` : ""} open roles
+                Post a role — from £149
               </Link>
               <Link
-                href="/auth/register"
+                href="/jobs"
                 className="border-2 border-teal/25 text-teal px-6 py-3 rounded-full font-semibold text-sm hover:border-teal hover:bg-teal/5 transition-colors"
               >
-                Post a job — from £149
+                Browse{count > 0 ? ` ${count}` : ""} open roles
               </Link>
             </motion.div>
           </div>
 
-          {/* Right: image — hidden on mobile */}
+          {/* Right: image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -93,12 +91,11 @@ export function HomeHero({ count }: { count: number }) {
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl shadow-teal/10">
               <Image
                 src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&q=80"
-                alt="Healthcare professional"
+                alt="Healthcare professional in a private practice"
                 fill
                 className="object-cover"
                 priority
               />
-              {/* Subtle dark gradient at bottom so the card reads well */}
               <div className="absolute inset-0 bg-gradient-to-t from-navy/30 via-transparent to-transparent" />
             </div>
 
@@ -109,11 +106,11 @@ export function HomeHero({ count }: { count: number }) {
               transition={{ duration: 0.6, delay: 0.8 }}
               className="absolute -bottom-4 -left-7 bg-white rounded-xl px-4 py-3.5 shadow-lg shadow-navy/8 border border-border/50"
             >
-              <p className="text-[10px] font-semibold text-teal uppercase tracking-wider mb-0.5">The Practice Standard</p>
-              <p className="text-xs font-medium text-navy">High standards attract great people.</p>
+              <p className="text-[10px] font-semibold text-teal uppercase tracking-wider mb-0.5">Coverage</p>
+              <p className="text-xs font-medium text-navy">88 professions · 12 UK regions</p>
+              <p className="text-[10px] text-brand-slate mt-0.5">Candidates always free</p>
             </motion.div>
 
-            {/* Mint accent dot */}
             <div className="absolute -top-3 -right-3 w-16 h-16 bg-mint/30 rounded-full blur-xl" />
           </motion.div>
 

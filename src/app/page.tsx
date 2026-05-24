@@ -20,12 +20,48 @@ export default async function HomePage() {
     <>
       <HomeHero count={count ?? 0} />
 
+      {/* Why not the alternatives */}
+      <section className="py-16 bg-white border-b border-border/40">
+        <div className="max-w-5xl mx-auto px-4">
+          <AnimateIn>
+            <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.18em] text-center mb-10">
+              Why practices choose us
+            </p>
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                {
+                  versus: "vs. Agencies",
+                  heading: "Keep the 15–25%",
+                  body: "A £45k hire through an agency costs £7,000–£11,000 in fees. Practice Pro is £249/month for unlimited listings. One hire pays for years.",
+                },
+                {
+                  versus: "vs. Indeed & Reed",
+                  heading: "No unqualified flood",
+                  body: "General boards send volume, not quality. 68% of Indeed applicants typically fail initial screening. We only reach registered, regulated professionals.",
+                },
+                {
+                  versus: "vs. NHS Jobs",
+                  heading: "Private practice only",
+                  body: "NHS Jobs is built for NHS roles. Professionals searching there want NHS band progressions. Ours are looking specifically for private practice.",
+                },
+              ].map((item) => (
+                <div key={item.versus} className="bg-off-white border border-border rounded-2xl p-6">
+                  <p className="text-[10px] font-bold text-teal uppercase tracking-widest mb-3">{item.versus}</p>
+                  <p className="text-sm font-bold text-navy mb-2">{item.heading}</p>
+                  <p className="text-xs text-brand-slate leading-relaxed">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </AnimateIn>
+        </div>
+      </section>
+
       {/* Professions */}
       <section className="py-16 bg-white border-b border-border/40">
         <div className="max-w-5xl mx-auto px-4">
           <AnimateIn>
             <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.18em] text-center mb-8">
-              Roles we cover
+              88 regulated professions covered
             </p>
             <div className="flex flex-wrap gap-2 justify-center">
               {PROFESSIONS.map(p => (
@@ -53,13 +89,13 @@ export default async function HomePage() {
                   High standards attract great people.
                 </h2>
                 <p className="text-white/55 text-sm leading-relaxed mb-7">
-                  Reach verified, registered professionals across every discipline. Post a role in minutes and start receiving applications the same day.
+                  Reach verified, registered professionals across every discipline — without the agency markup. Post a role in minutes and receive applications from people who actually want to work in private practice.
                 </p>
                 <div className="space-y-3 mb-8">
                   {[
-                    "Dental, vet, optician, aesthetics, physio and GP roles",
+                    "Vet, optician, aesthetics, physio, private medical and more",
                     "Applications managed in your dashboard",
-                    "Unlimited listings with Practice Pro",
+                    "Unlimited listings from £249/month with Practice Pro",
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-3">
                       <div className="mt-1 w-3.5 h-3.5 rounded-full bg-mint/20 flex items-center justify-center shrink-0">
@@ -77,19 +113,18 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              {/* Image */}
               <AnimateIn direction="left" delay={0.15}>
                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl shadow-black/30">
                   <Image
-                    src="https://images.unsplash.com/photo-1629909615184-74f495363b67?auto=format&fit=crop&w=600&q=80"
-                    alt="Dental practice professional"
+                    src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=600&q=80"
+                    alt="Private healthcare professional at work"
                     fill
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/50 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent" />
                   <div className="absolute bottom-5 left-5 right-5">
-                    <p className="text-white/50 text-[10px] uppercase tracking-wider mb-1">Listing reached</p>
-                    <p className="text-white font-semibold text-sm">Senior Dental Hygienist — London</p>
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider mb-1">Role posted</p>
+                    <p className="text-white font-semibold text-sm">Senior Aesthetic Nurse — Manchester</p>
                   </div>
                 </div>
               </AnimateIn>
@@ -104,12 +139,11 @@ export default async function HomePage() {
           <AnimateIn>
             <div className="grid md:grid-cols-2 gap-14 lg:gap-20 items-center">
 
-              {/* Image */}
               <AnimateIn direction="right" delay={0.1}>
                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl shadow-teal/8 order-2 md:order-1">
                   <Image
                     src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80"
-                    alt="Healthcare professional"
+                    alt="Registered healthcare professional"
                     fill
                     className="object-cover"
                   />
@@ -123,12 +157,12 @@ export default async function HomePage() {
                   Your career, at a higher standard.
                 </h2>
                 <p className="text-brand-slate text-sm leading-relaxed mb-7">
-                  Finding your next role should be straightforward. Browse positions, apply in seconds, and track your applications — always free.
+                  Private practice roles used to be invisible — buried under NHS listings or locked behind agency relationships. Not here. Browse and apply for free, always.
                 </p>
                 <div className="space-y-3 mb-8">
                   {[
-                    "Always free to search and apply",
-                    "Roles from practices that operate at a higher standard",
+                    "Always free to search and apply — no fees, ever",
+                    "Private practice roles only — no NHS clutter",
                     "Track every application in one dashboard",
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-3">
@@ -151,24 +185,28 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Bottom CTA strip */}
+      {/* Honest early-stage CTA strip */}
       <section className="py-14 bg-teal">
         <AnimateIn>
           <div className="max-w-2xl mx-auto px-4 text-center">
-            <h2 className="text-2xl font-bold text-off-white mb-3">Ready to find your next hire?</h2>
-            <p className="text-off-white/60 text-sm mb-7">Join practices across the UK using The Practice Standard.</p>
+            <h2 className="text-2xl font-bold text-off-white mb-3">
+              Post your next role without paying agency fees.
+            </h2>
+            <p className="text-off-white/60 text-sm mb-7">
+              From £149 per listing. Candidates always free. No contracts.
+            </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link
                 href="/auth/register"
                 className="bg-white text-teal px-6 py-3 rounded-full font-semibold text-sm hover:bg-off-white transition-colors"
               >
-                Post a job — from £149
+                Post a role — from £149
               </Link>
               <Link
-                href="/jobs"
+                href="/about"
                 className="border-2 border-white/30 text-white px-6 py-3 rounded-full font-semibold text-sm hover:border-white transition-colors"
               >
-                Browse open roles
+                About The Practice Standard
               </Link>
             </div>
           </div>
@@ -192,7 +230,7 @@ export default async function HomePage() {
                   width: 32,
                   height: 32,
                 },
-                description: "The UK's professional job board for veterinary, optician, aesthetic, physiotherapy, GP and private medical practice roles.",
+                description: "The UK's specialist job board for regulated private healthcare practices — veterinary, optometry, aesthetics, physiotherapy, and private medical.",
                 areaServed: { "@type": "Country", name: "United Kingdom" },
               },
               {
