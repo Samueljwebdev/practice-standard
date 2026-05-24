@@ -30,6 +30,7 @@ export function Footer() {
               <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
               <Link href="/auth/register" className="hover:text-white transition-colors">Post a Job</Link>
               <Link href="/practice/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
+              <Link href="/salary-benchmark" className="hover:text-white transition-colors">Salary Benchmark</Link>
               <Link href="/about" className="hover:text-white transition-colors">About</Link>
             </nav>
           </div>

@@ -20,6 +20,21 @@ export default async function HomePage() {
     <>
       <HomeHero count={count ?? 0} />
 
+      {/* Lead magnet banner */}
+      <section className="py-5 bg-teal/8 border-b border-teal/15">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-sm text-navy font-medium text-center sm:text-left">
+            <span className="font-bold">Free resource:</span> UK Private Practice Salary Benchmark 2026 — 25+ roles, 5 disciplines, regional adjustments.
+          </p>
+          <Link
+            href="/salary-benchmark"
+            className="shrink-0 bg-teal text-off-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-teal/90 transition-colors whitespace-nowrap"
+          >
+            Get the free benchmark →
+          </Link>
+        </div>
+      </section>
+
       {/* Why not the alternatives */}
       <section className="py-16 bg-white border-b border-border/40">
         <div className="max-w-5xl mx-auto px-4">
