@@ -2,6 +2,8 @@ import { notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { UK_REGIONS } from "@/lib/constants"
 import { getProfessionBySlug, slugToRegion, regionToSlug, getBaseUrl } from "@/lib/seo"
+import { PROFESSION_CONTENT } from "@/lib/profession-content"
+import { getRegionContext } from "@/lib/region-content"
 import { JobCard } from "@/components/jobs/JobCard"
 import { AnimateIn } from "@/components/ui/AnimateIn"
 import Link from "next/link"
@@ -20,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const base = getBaseUrl()
   return {
     title: `${prof.label} Jobs in ${regionLabel} | The Practice Standard`,
-    description: `Find ${prof.label} jobs in ${regionLabel}. Browse permanent, part-time, locum and contract ${prof.label.toLowerCase()} roles on The Practice Standard.`,
+    description: `Find ${prof.label} jobs in ${regionLabel}. Browse permanent, part-time, locum and contract ${prof.label.toLowerCase()} roles at private practices across ${regionLabel} on The Practice Standard.`,
     alternates: { canonical: `${base}/roles/${profession}/${region}` },
   }
 }
@@ -44,6 +46,8 @@ export default async function ProfessionRegionPage({ params }: Props) {
 
   const base = getBaseUrl()
   const count = jobs?.length ?? 0
+  const content = PROFESSION_CONTENT[prof.value] ?? null
+  const regionContext = getRegionContext(regionLabel, prof.label)
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
@@ -63,7 +67,7 @@ export default async function ProfessionRegionPage({ params }: Props) {
         </h1>
         <p className="text-brand-slate mb-8">
           {count > 0
-            ? `${count} ${prof.label.toLowerCase()} role${count !== 1 ? "s" : ""} in ${regionLabel}`
+            ? `${count} ${prof.label.toLowerCase()} role${count !== 1 ? "s" : ""} currently available in ${regionLabel}`
             : `No ${prof.label.toLowerCase()} roles in ${regionLabel} right now — check back soon or post one.`}
         </p>
       </AnimateIn>
@@ -79,7 +83,7 @@ export default async function ProfessionRegionPage({ params }: Props) {
           <div className="bg-white border border-border rounded-2xl p-10 text-center mb-12">
             <p className="text-navy font-semibold mb-2">No roles in {regionLabel} yet</p>
             <p className="text-brand-slate text-sm mb-6">
-              Be the first to post a {prof.label} role in {regionLabel}.
+              Be the first to post a {prof.label} role in {regionLabel} and reach verified professionals actively looking for private practice work.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link
@@ -99,10 +103,58 @@ export default async function ProfessionRegionPage({ params }: Props) {
         </AnimateIn>
       )}
 
+      {/* Region context + profession content */}
       <AnimateIn delay={0.1}>
+        <div className="bg-white border border-border rounded-2xl p-8 mb-8 space-y-6">
+
+          {/* Region context */}
+          <div>
+            <p className="text-xs font-semibold text-teal uppercase tracking-[0.15em] mb-3">
+              {prof.label} in {regionLabel}
+            </p>
+            <p className="text-navy/75 text-sm leading-relaxed">{regionContext}</p>
+          </div>
+
+          {content && (
+            <>
+              {/* Profession overview */}
+              <div className="border-t border-border pt-6">
+                <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.15em] mb-3">About this role</p>
+                <p className="text-navy/75 text-sm leading-relaxed">{content.intro}</p>
+                <div className="flex flex-wrap gap-6 mt-4 text-sm">
+                  {content.regulator && (
+                    <div>
+                      <span className="text-brand-slate text-xs uppercase tracking-wide">Regulator </span>
+                      <span className="text-navy font-medium">{content.regulator}</span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-brand-slate text-xs uppercase tracking-wide">Typical salary </span>
+                    <span className="text-navy font-medium">{content.salaryRange}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* FAQ */}
+              <div className="border-t border-border pt-6 space-y-4">
+                <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.15em]">Common questions</p>
+                {content.faq.map((item, i) => (
+                  <div key={i}>
+                    <p className="text-sm font-semibold text-navy mb-1">{item.q}</p>
+                    <p className="text-sm text-navy/70 leading-relaxed">{item.a}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </AnimateIn>
+
+      {/* Other regions */}
+      <AnimateIn delay={0.12}>
         <div className="border-t border-border pt-8">
           <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.15em] mb-4">
-            Other regions
+            {prof.label} jobs in other regions
           </p>
           <div className="flex flex-wrap gap-2">
             {UK_REGIONS.filter(r => r !== regionLabel).map(region => (
@@ -142,6 +194,14 @@ export default async function ProfessionRegionPage({ params }: Props) {
                   position: i + 1,
                   url: `${base}/jobs/${job.slug}`,
                   name: job.title,
+                })),
+              }] : []),
+              ...(content ? [{
+                "@type": "FAQPage",
+                mainEntity: content.faq.map(item => ({
+                  "@type": "Question",
+                  name: item.q,
+                  acceptedAnswer: { "@type": "Answer", text: item.a },
                 })),
               }] : []),
             ],

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { UK_REGIONS } from "@/lib/constants"
+import { UK_REGIONS, PROFESSIONS } from "@/lib/constants"
 import { getProfessionBySlug, regionToSlug, professionToSlug, getBaseUrl } from "@/lib/seo"
 import { PROFESSION_CONTENT } from "@/lib/profession-content"
 import { JobCard } from "@/components/jobs/JobCard"
@@ -12,6 +12,10 @@ import type { Job } from "@/types/database"
 interface Props { params: Promise<{ profession: string }> }
 
 export const revalidate = 3600
+
+export function generateStaticParams() {
+  return PROFESSIONS.map(p => ({ profession: professionToSlug(p.value) }))
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { profession } = await params
