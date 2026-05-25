@@ -46,18 +46,18 @@ export default async function HomePage() {
               {[
                 {
                   versus: "vs. Agencies",
-                  heading: "Keep the 15–25%",
-                  body: "A £45k hire through an agency costs £7,000–£11,000 in fees. Practice Pro is £249/month for unlimited listings. One hire pays for years.",
+                  heading: "Keep the £8k per hire",
+                  body: "A £45k aesthetic nurse hire through an agency costs £6,750–£11,250 in fees. Practice Pro is £249/month for unlimited listings across every discipline. One successful hire pays for years of the platform.",
                 },
                 {
                   versus: "vs. Indeed & Reed",
                   heading: "No unqualified flood",
-                  body: "General boards send volume, not quality. 68% of Indeed applicants typically fail initial screening. We only reach registered, regulated professionals.",
+                  body: "\"Virtually all applications from completely unqualified individuals.\" — Indeed employer, Trustpilot. Indeed now costs £700+/month for sponsored visibility. We're £149 per listing, private-practice only.",
                 },
                 {
                   versus: "vs. NHS Jobs",
                   heading: "Private practice only",
-                  body: "NHS Jobs is built for NHS roles. Professionals searching there want NHS band progressions. Ours are looking specifically for private practice.",
+                  body: "NHS Jobs is built for NHS trusts — private practices can't even post there. Professionals searching NHS Jobs want NHS pay bands, not private practice careers. Ours are looking specifically for independent roles.",
                 },
               ].map((item) => (
                 <div key={item.versus} className="bg-off-white border border-border rounded-2xl p-6">
@@ -89,6 +89,60 @@ export default async function HomePage() {
                 </Link>
               ))}
             </div>
+          </AnimateIn>
+        </div>
+      </section>
+
+      {/* Pricing comparison */}
+      <section className="py-16 bg-white border-b border-border/40">
+        <div className="max-w-4xl mx-auto px-4">
+          <AnimateIn>
+            <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.18em] text-center mb-3">Pricing</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-navy text-center mb-2">
+              The cheapest specialist board in the UK.
+            </h2>
+            <p className="text-brand-slate text-sm text-center mb-10">By quite a lot — and the only one that covers every discipline.</p>
+            <div className="bg-off-white border border-border rounded-2xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left px-5 py-3 text-brand-slate font-semibold text-xs uppercase tracking-wide">Platform</th>
+                      <th className="text-left px-5 py-3 text-brand-slate font-semibold text-xs uppercase tracking-wide">Cost per listing</th>
+                      <th className="text-left px-5 py-3 text-brand-slate font-semibold text-xs uppercase tracking-wide hidden sm:table-cell">Covers all disciplines?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: "Vet Times Jobs", price: "£595 +VAT", allDisciplines: false },
+                      { name: "BDJ Jobs (dental)", price: "£430–£790 +VAT", allDisciplines: false },
+                      { name: "Indeed (sponsored)", price: "£700+ per month", allDisciplines: false },
+                      { name: "CSP Jobs (physio)", price: "£220–£370 +VAT", allDisciplines: false },
+                      { name: "Reed", price: "£199–£799 +VAT", allDisciplines: false },
+                    ].map((row) => (
+                      <tr key={row.name} className="border-b border-border/50">
+                        <td className="px-5 py-3 text-navy/70">{row.name}</td>
+                        <td className="px-5 py-3 text-navy/70">{row.price}</td>
+                        <td className="px-5 py-3 text-navy/40 hidden sm:table-cell text-xs">One discipline only</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-teal/5 border-t-2 border-teal/20">
+                      <td className="px-5 py-3.5 font-bold text-teal">The Practice Standard</td>
+                      <td className="px-5 py-3.5 font-bold text-teal">£149 +VAT</td>
+                      <td className="px-5 py-3.5 font-bold text-teal hidden sm:table-cell text-xs">Yes — all 88 professions</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <p className="text-center mt-5">
+              <Link
+                href="/auth/register"
+                className="inline-flex bg-teal text-off-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-teal/90 transition-colors"
+              >
+                Post a role — from £149
+              </Link>
+            </p>
           </AnimateIn>
         </div>
       </section>
