@@ -24,7 +24,7 @@ export default async function HomePage() {
       <section className="py-5 bg-teal/8 border-b border-teal/15">
         <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sm text-navy font-medium text-center sm:text-left">
-            <span className="font-bold">Free resource:</span> UK Private Practice Salary Benchmark 2026 — 25+ roles, 5 disciplines, regional adjustments.
+            <span className="font-bold">Free:</span> UK Private Practice Salary Benchmark 2026 — know what to pay before you post. 25+ roles, 5 disciplines, regional adjustments.
           </p>
           <Link
             href="/salary-benchmark"
@@ -32,6 +32,46 @@ export default async function HomePage() {
           >
             Get the free benchmark →
           </Link>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-16 bg-white border-b border-border/40">
+        <div className="max-w-5xl mx-auto px-4">
+          <AnimateIn>
+            <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.18em] text-center mb-10">
+              How it works
+            </p>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  step: "1",
+                  heading: "Post your role in minutes",
+                  body: "Fill in the job details, pay once, and your listing goes live immediately — visible across every relevant profession and region page.",
+                },
+                {
+                  step: "2",
+                  heading: "Reach registered professionals",
+                  body: "Your role is matched to candidates who are registered with their professional body and actively looking for private practice work. No NHS noise.",
+                },
+                {
+                  step: "3",
+                  heading: "Review and respond directly",
+                  body: "Applications come straight to your dashboard. No consultant in the middle. You see every applicant, shortlist who you want, and respond directly.",
+                },
+              ].map((item) => (
+                <div key={item.step} className="flex gap-5">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center">
+                    <span className="text-xs font-bold text-teal">{item.step}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-navy mb-2">{item.heading}</p>
+                    <p className="text-xs text-brand-slate leading-relaxed">{item.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </AnimateIn>
         </div>
       </section>
 

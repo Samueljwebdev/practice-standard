@@ -76,7 +76,7 @@ export function HomeHero({ count }: { count: number }) {
                 href="/jobs"
                 className="border-2 border-teal/25 text-teal px-6 py-3 rounded-full font-semibold text-sm hover:border-teal hover:bg-teal/5 transition-colors"
               >
-                Browse{count > 0 ? ` ${count}` : ""} open roles
+                Browse{count > 10 ? ` ${count}` : ""} open roles
               </Link>
             </motion.div>
           </div>

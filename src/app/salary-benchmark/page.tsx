@@ -56,30 +56,57 @@ export default function SalaryBenchmarkPage() {
 
   if (success) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center">
-          <div className="w-12 h-12 rounded-full bg-teal/10 flex items-center justify-center mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="text-teal">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
+      <div className="min-h-[60vh] flex items-center justify-center px-4 py-16">
+        <div className="max-w-lg w-full">
+          <div className="text-center mb-8">
+            <div className="w-12 h-12 rounded-full bg-teal/10 flex items-center justify-center mx-auto mb-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="text-teal">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold text-navy mb-2">Benchmark sent</h1>
+            <p className="text-brand-slate text-sm leading-relaxed">
+              Check your inbox — it should arrive within a minute. Check spam if not.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-navy mb-3">On its way</h1>
-          <p className="text-brand-slate text-sm leading-relaxed mb-6">
-            The UK Private Practice Salary Benchmark 2026 is in your inbox. Check your spam folder if it doesn't arrive within a couple of minutes.
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/practice/post"
-              className="bg-teal text-off-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-teal/90 transition-colors"
-            >
-              Post a role — from £149
-            </Link>
-            <Link
-              href="/jobs"
-              className="border border-border text-navy px-5 py-2.5 rounded-full text-sm font-semibold hover:border-teal hover:text-teal transition-colors"
-            >
-              Browse open roles
-            </Link>
+
+          <div className="bg-off-white border border-border rounded-2xl p-6 mb-6">
+            <p className="text-xs font-semibold text-brand-slate uppercase tracking-[0.18em] mb-4">What to do with it</p>
+            <div className="space-y-3">
+              {[
+                "Use the salary ranges to sense-check what you're budgeting for your next hire",
+                "Check the regional adjustment — London and South East candidates expect 15–25% above benchmark",
+                "Read the non-salary section — CPD budget and indemnity cover are what candidates ask about first",
+              ].map((tip, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-teal/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-teal">{i + 1}</span>
+                  </div>
+                  <p className="text-sm text-navy/70 leading-relaxed">{tip}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-navy rounded-2xl p-6 text-center">
+            <p className="text-white font-semibold text-sm mb-1">Ready to post your role?</p>
+            <p className="text-white/50 text-xs mb-4">
+              From £149 +VAT per listing. No agency fees. Registered professionals only.
+            </p>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link
+                href="/auth/register"
+                className="bg-mint text-navy px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-mint/85 transition-colors"
+              >
+                Post a role — from £149
+              </Link>
+              <Link
+                href="/pricing"
+                className="border border-white/20 text-white/70 px-5 py-2.5 rounded-full text-sm font-semibold hover:border-white/40 hover:text-white transition-colors"
+              >
+                See pricing
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -141,10 +141,10 @@ export default function PricingPage() {
                 ))}
               </ul>
               <Link
-                href="/api/stripe/checkout?mode=subscription"
+                href="/auth/register"
                 className="block w-full text-center bg-mint text-navy px-4 py-2.5 rounded-full text-sm font-semibold hover:bg-mint/85 transition-colors"
               >
-                Subscribe — £{SUBSCRIPTION_PRICE_GBP}/month
+                Get started — £{SUBSCRIPTION_PRICE_GBP}/month
               </Link>
             </div>
           </AnimateIn>
