@@ -41,3 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+.env*
+
+# Lead data — contains real contact info, keep off public repo
+outreach/
+leads/
+
+# Supabase temp files
+supabase/.temp/

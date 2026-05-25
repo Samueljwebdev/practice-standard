@@ -291,6 +291,60 @@ export async function sendSalaryBenchmark({
   })
 }
 
+// ─── Benchmark nurture sequence ───────────────────────────────────────────────
+
+export async function sendBenchmarkFollowup1({
+  email,
+  name,
+}: {
+  email: string
+  name: string
+}) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: "How many candidates are actually on the platform?",
+    html: html(`
+      <p>Hi ${name},</p>
+      <p>You downloaded the salary benchmark a few days ago — hopefully it's useful for your next hire.</p>
+      <p>The question we hear most from practices at this stage is: <strong>"But how many candidates do you actually have?"</strong></p>
+      <p>It's a fair question. And we'll be straight with you: we're growing the candidate pool actively. We're not Indeed. We're not a platform with 26 million passive job-seekers who mostly want something else.</p>
+      <p>What we are is a job board where every professional registers specifically to find private practice roles. They're not browsing between NHS band 5 positions and your aesthetic nurse vacancy. They came here for private practice careers — and nothing else.</p>
+      <p>We also do something unusual: every new listing gets promoted directly to registered professionals in that discipline and region. Not just listed and left.</p>
+      <p>If you're planning a hire in the next few months — even if it's not urgent — posting early gives your listing time to find the right person before the role becomes urgent.</p>
+      <a class="btn" href="${BASE}/practice/post">Post a role — from £149 →</a>
+      <p class="meta">Questions? Reply to this email.</p>
+    `),
+  })
+}
+
+export async function sendBenchmarkFollowup2({
+  email,
+  name,
+}: {
+  email: string
+  name: string
+}) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: "Still need to fill that role?",
+    html: html(`
+      <p>Hi ${name},</p>
+      <p>One last note from us.</p>
+      <p>If you're still planning a hire, here's the short version of what we offer:</p>
+      <p>A 30-day listing on The Practice Standard is <strong>£149 +VAT</strong>. It goes live on payment — no briefing call, no agency relationship, no 15–25% placement fee when you find the right person. The listing takes about 5 minutes to post.</p>
+      <p>If you hire regularly, <strong>Practice Pro is £249/month</strong> for unlimited listings across every discipline. A single successful hire typically saves more than a full year of the subscription compared to agency fees.</p>
+      <a class="btn" href="${BASE}/practice/post">Post your first role →</a>
+      <p>If the timing isn't right, no problem — save this for when it is.</p>
+      <p>Good luck with the hire.</p>
+      <p class="meta">To stop receiving these emails, reply with "unsubscribe".</p>
+    `),
+  })
+}
+
 // ─── Job expiry reminder ──────────────────────────────────────────────────────
 
 export async function sendJobExpiryReminder({
