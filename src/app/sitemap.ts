@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next"
 import { createClient } from "@/lib/supabase/server"
 import { PROFESSIONS, UK_REGIONS } from "@/lib/constants"
 import { professionToSlug, regionToSlug, getBaseUrl } from "@/lib/seo"
+import { getBlogPosts } from "@/lib/blog-content"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getBaseUrl()
@@ -34,10 +35,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
+  const blogUrls: MetadataRoute.Sitemap = getBlogPosts().map(post => ({
+    url: `${base}/blog/${post.slug}`,
+    lastModified: post.date,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }))
+
   return [
     { url: base, changeFrequency: "daily" as const, priority: 1 },
     { url: `${base}/jobs`, changeFrequency: "daily" as const, priority: 0.9 },
     { url: `${base}/pricing`, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${base}/blog`, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${base}/salary-benchmark`, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${base}/alternatives`, changeFrequency: "monthly" as const, priority: 0.6 },
+    ...blogUrls,
     ...jobUrls,
     ...professionUrls,
     ...regionUrls,
