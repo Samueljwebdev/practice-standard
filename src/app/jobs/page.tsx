@@ -12,7 +12,7 @@ export function generateMetadata(): Metadata {
   const base = getBaseUrl()
   return {
     title: "Private Healthcare Jobs UK | The Practice Standard",
-    description: "Browse veterinary, optometry, aesthetics, physiotherapy and private medical jobs across the UK. Permanent, part-time, locum and contract roles at private practices. Always free to apply.",
+    description: "Browse dental, veterinary, optometry, aesthetics, physiotherapy and private medical jobs across the UK. Permanent, part-time, locum and contract roles at private practices. Always free to apply.",
     alternates: { canonical: `${base}/jobs` },
   }
 }
@@ -55,6 +55,11 @@ async function JobList({ searchParams }: { searchParams: Awaited<PageProps["sear
 
 const DISCIPLINE_GROUPS = [
   {
+    label: "Dentistry",
+    description: "General dentists, associate dentists, orthodontists, dental hygienists, dental nurses and practice managers at private dental practices.",
+    professions: ["general_dentist", "associate_dentist", "orthodontist", "dental_hygienist", "dental_nurse", "dental_practice_manager"],
+  },
+  {
     label: "Aesthetics & MedSpa",
     description: "Aesthetic nurses, doctors, injectors, laser technicians, skin therapists and clinic management roles.",
     professions: ["aesthetic_nurse", "aesthetic_doctor", "nurse_injector", "skin_therapist", "clinic_manager"],
@@ -95,7 +100,7 @@ export default async function JobsPage({ searchParams }: PageProps) {
       <div className="mb-6">
         <p className="text-xs font-semibold text-teal uppercase tracking-[0.18em] mb-2">Open roles</p>
         <h1 className="text-2xl font-bold text-navy">Private Healthcare Jobs UK</h1>
-        <p className="text-brand-slate text-sm mt-1">Veterinary, optometry, aesthetics, physiotherapy and private medical roles — always free to apply.</p>
+        <p className="text-brand-slate text-sm mt-1">Dental, veterinary, optometry, aesthetics, physiotherapy and private medical roles — always free to apply.</p>
       </div>
       <Suspense fallback={null}>
         <JobFilters />

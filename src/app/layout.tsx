@@ -11,11 +11,11 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["600", "700"], variable: 
 
 export const metadata: Metadata = {
   title: "The Practice Standard — Healthcare Jobs UK",
-  description: "The UK's specialist job board for regulated private healthcare practices — veterinary, optometry, aesthetics, physiotherapy, and private medical.",
+  description: "The UK's specialist job board for regulated private healthcare practices — dental, veterinary, optometry, aesthetics, physiotherapy, and private medical.",
   metadataBase: new URL("https://thepracticestandard.co.uk"),
   openGraph: {
     title: "The Practice Standard — Healthcare Jobs UK",
-    description: "The UK's specialist job board for regulated private healthcare practices — veterinary, optometry, aesthetics, physiotherapy, and private medical.",
+    description: "The UK's specialist job board for regulated private healthcare practices — dental, veterinary, optometry, aesthetics, physiotherapy, and private medical.",
     url: "https://thepracticestandard.co.uk",
     siteName: "The Practice Standard",
     locale: "en_GB",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "The Practice Standard — Healthcare Jobs UK",
-    description: "The UK's specialist job board for regulated private healthcare practices — veterinary, optometry, aesthetics, physiotherapy, and private medical.",
+    description: "The UK's specialist job board for regulated private healthcare practices — dental, veterinary, optometry, aesthetics, physiotherapy, and private medical.",
   },
 }
 

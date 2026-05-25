@@ -245,7 +245,7 @@ export default async function HomePage() {
                   width: 32,
                   height: 32,
                 },
-                description: "The UK's specialist job board for regulated private healthcare practices — veterinary, optometry, aesthetics, physiotherapy, and private medical.",
+                description: "The UK's specialist job board for regulated private healthcare practices — dental, veterinary, optometry, aesthetics, physiotherapy, and private medical.",
                 areaServed: { "@type": "Country", name: "United Kingdom" },
               },
               {
