@@ -7,6 +7,7 @@ export type Block =
   | { type: "callout"; heading?: string; text: string }
   | { type: "stats"; items: { value: string; label: string }[] }
   | { type: "table"; headers: string[]; rows: string[][] }
+  | { type: "links"; heading: string; items: { label: string; href: string }[] }
 
 export interface BlogPost {
   slug: string
@@ -141,6 +142,16 @@ export const BLOG_POSTS: BlogPost[] = [
         text: "Why avoid an agency?",
       },
       {
+        type: "links",
+        heading: "Browse aesthetic roles",
+        items: [
+          { label: "Aesthetic Nurse jobs", href: "/roles/aesthetic-nurse" },
+          { label: "Nurse Injector jobs", href: "/roles/nurse-injector" },
+          { label: "Clinic Manager jobs", href: "/roles/clinic-manager" },
+          { label: "Free Salary Benchmark", href: "/salary-benchmark" },
+        ],
+      },
+      {
         type: "p",
         text: "Healthcare recruitment agencies for aesthetics typically charge 15–25% of the candidate's first-year salary. On a £45,000 hire, that is £6,750–£11,250 — a cost that recurs every time the practitioner leaves and is replaced. The fee buys you access to a shortlist that the agency has sourced, often from the same online platforms you could access yourself.",
       },
@@ -245,6 +256,16 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         type: "h2",
         text: "What direct hire requires from you",
+      },
+      {
+        type: "links",
+        heading: "Compare your options",
+        items: [
+          { label: "vs. Recruitment Agencies", href: "/alternatives/recruitment-agency" },
+          { label: "vs. Indeed", href: "/alternatives/indeed" },
+          { label: "vs. Reed", href: "/alternatives/reed" },
+          { label: "Pricing — from £149", href: "/pricing" },
+        ],
       },
       {
         type: "p",
@@ -387,6 +408,15 @@ export const BLOG_POSTS: BlogPost[] = [
         text: "Most listings cover items 1 and (partially) 2. The clinics that consistently attract strong applicants cover all eight.",
       },
       {
+        type: "links",
+        heading: "Related reading",
+        items: [
+          { label: "How to hire an aesthetic nurse prescriber", href: "/blog/how-to-hire-aesthetic-nurse-prescriber" },
+          { label: "The real cost of healthcare recruitment", href: "/blog/real-cost-healthcare-recruitment-2026" },
+          { label: "Free Salary Benchmark 2026", href: "/salary-benchmark" },
+        ],
+      },
+      {
         type: "callout",
         heading: "Write a better listing",
         text: "Post on The Practice Standard from £149 +VAT and reach registered professionals who are actively looking for private practice roles. Your listing appears across all relevant profession and region pages.",
@@ -441,6 +471,16 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         type: "h2",
         text: "What veterinary candidates want from independent practices",
+      },
+      {
+        type: "links",
+        heading: "Browse veterinary roles",
+        items: [
+          { label: "Veterinarian jobs", href: "/roles/veterinarian" },
+          { label: "Veterinary Nurse jobs", href: "/roles/vet-nurse" },
+          { label: "vs. Vet Times Jobs", href: "/alternatives/vet-times-jobs" },
+          { label: "Free Salary Benchmark", href: "/salary-benchmark" },
+        ],
       },
       {
         type: "p",
@@ -669,6 +709,18 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         type: "h2",
         text: "A note on timelines",
+      },
+      {
+        type: "links",
+        heading: "Browse roles by discipline",
+        items: [
+          { label: "Aesthetic Nurse jobs", href: "/roles/aesthetic-nurse" },
+          { label: "Physiotherapist jobs", href: "/roles/physiotherapist" },
+          { label: "Veterinarian jobs", href: "/roles/veterinarian" },
+          { label: "Private GP jobs", href: "/roles/private-gp" },
+          { label: "Optometrist jobs", href: "/roles/optometrist" },
+          { label: "View pricing", href: "/pricing" },
+        ],
       },
       {
         type: "p",

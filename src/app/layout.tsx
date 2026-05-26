@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
+import { CookieBanner } from "@/components/ui/CookieBanner"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const poppins = Poppins({ subsets: ["latin"], weight: ["600", "700"], variable: "--font-poppins" })
@@ -32,6 +33,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.variable} ${poppins.variable} font-sans min-h-screen flex flex-col bg-background`}>
+        <Script id="ga-consent-default" strategy="beforeInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+          });
+        `}</Script>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-215E91WXVX" strategy="afterInteractive" />
         <Script id="ga-init" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
@@ -42,6 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieBanner />
         <Analytics />
       </body>
     </html>

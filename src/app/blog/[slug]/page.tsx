@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { getBlogPost, getBlogPosts, type Block } from "@/lib/blog-content"
+
 import { AnimateIn } from "@/components/ui/AnimateIn"
 import { getBaseUrl } from "@/lib/seo"
 import type { Metadata } from "next"
@@ -248,6 +249,24 @@ function BlockRenderer({ block }: { block: Block }) {
               ))}
             </tbody>
           </table>
+        </div>
+      )
+
+    case "links":
+      return (
+        <div className="bg-off-white border border-border rounded-xl p-5 my-2">
+          <p className="text-[10px] font-bold text-brand-slate uppercase tracking-widest mb-3">{block.heading}</p>
+          <div className="flex flex-wrap gap-2">
+            {block.items.map((link, i) => (
+              <Link
+                key={i}
+                href={link.href}
+                className="text-xs font-semibold text-teal border border-teal/25 px-3 py-1.5 rounded-full hover:bg-teal/5 hover:border-teal/60 transition-colors"
+              >
+                {link.label} →
+              </Link>
+            ))}
+          </div>
         </div>
       )
 
