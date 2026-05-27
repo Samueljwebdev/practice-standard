@@ -135,25 +135,25 @@ export function HomeHero({ count }: { count: number }) {
               {/* Inner core */}
               <div className="relative aspect-[3/4] overflow-hidden rounded-[calc(2.5rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.55)]">
                 <Image
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&q=80"
-                  alt="Healthcare professional in a private practice"
+                  src="/images/hero-dentist.png"
+                  alt="Private dental professional — The Practice Standard"
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-navy/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/75 via-navy/15 to-transparent" />
 
                 {/* Glass role card — bottom of image */}
                 <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/15 bg-white/12 p-4 backdrop-blur-2xl">
                   <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
                     Role posted
                   </p>
-                  <p className="text-sm font-bold text-white">Senior Aesthetic Nurse — Manchester</p>
+                  <p className="text-sm font-bold text-white">Associate Dentist — London</p>
                   <div className="mt-2.5 flex items-center gap-2">
                     <span className="rounded-full bg-mint/20 px-2.5 py-0.5 text-[10px] font-semibold text-mint">
-                      Aesthetics
+                      Dentistry
                     </span>
-                    <span className="text-[10px] text-white/45">Permanent · £52k</span>
+                    <span className="text-[10px] text-white/45">Permanent · £65k</span>
                   </div>
                 </div>
               </div>
