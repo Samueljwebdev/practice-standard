@@ -14,7 +14,7 @@ const HEADLINE = [
 
 export function HomeHero({ count }: { count: number }) {
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section className="relative bg-white">
       {/* Ambient background orbs — GPU layer, no reflow */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute right-0 top-0 h-[700px] w-[700px] -translate-y-1/3 translate-x-1/3 rounded-full bg-mint/20 blur-[140px]" />
@@ -161,7 +161,7 @@ export function HomeHero({ count }: { count: number }) {
 
             {/* Floating coverage card */}
             <motion.div
-              className="absolute -left-10 top-[36%] rounded-2xl border border-navy/8 bg-white/95 px-5 py-4 shadow-[0_8px_40px_rgba(13,27,42,0.08)] backdrop-blur-xl"
+              className="absolute -left-6 top-[36%] rounded-2xl border border-navy/8 bg-white/95 px-5 py-4 shadow-[0_8px_40px_rgba(13,27,42,0.08)] backdrop-blur-xl"
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.65, delay: 0.88, ease }}

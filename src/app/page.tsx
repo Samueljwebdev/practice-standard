@@ -50,9 +50,9 @@ export default async function HomePage() {
           {/* Bento grid — 12-col at md */}
           <div className="grid gap-3 md:grid-cols-12">
 
-            {/* Card 1 — wide (7 cols) */}
-            <AnimateIn delay={0.05}>
-              <div className="md:col-span-7 h-full rounded-[1.75rem] bg-gradient-to-b from-navy/4 to-navy/2 p-[1.5px] ring-1 ring-navy/8">
+            {/* Card 1 — wide (7 cols): col-span on AnimateIn so it IS the grid item */}
+            <AnimateIn delay={0.05} className="md:col-span-7">
+              <div className="h-full rounded-[1.75rem] bg-gradient-to-b from-navy/4 to-navy/2 p-[1.5px] ring-1 ring-navy/8">
                 <div className="h-full rounded-[calc(1.75rem-1.5px)] bg-white p-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]">
                   <div className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-teal/10">
                     <span className="text-sm font-black text-teal">1</span>
@@ -75,8 +75,8 @@ export default async function HomePage() {
             </AnimateIn>
 
             {/* Card 2 — narrow (5 cols) */}
-            <AnimateIn delay={0.1}>
-              <div className="md:col-span-5 h-full rounded-[1.75rem] bg-gradient-to-b from-teal to-teal/90 p-[1.5px]">
+            <AnimateIn delay={0.1} className="md:col-span-5">
+              <div className="h-full rounded-[1.75rem] bg-gradient-to-b from-teal to-teal/90 p-[1.5px]">
                 <div className="h-full rounded-[calc(1.75rem-1.5px)] bg-teal p-8">
                   <div className="mb-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
                     <span className="text-sm font-black text-white">2</span>
@@ -97,8 +97,8 @@ export default async function HomePage() {
             </AnimateIn>
 
             {/* Card 3 — full width (12 cols), horizontal at md */}
-            <AnimateIn delay={0.15}>
-              <div className="md:col-span-12 rounded-[1.75rem] bg-gradient-to-b from-navy/4 to-navy/2 p-[1.5px] ring-1 ring-navy/8">
+            <AnimateIn delay={0.15} className="md:col-span-12">
+              <div className="rounded-[1.75rem] bg-gradient-to-b from-navy/4 to-navy/2 p-[1.5px] ring-1 ring-navy/8">
                 <div className="flex flex-col items-start gap-6 rounded-[calc(1.75rem-1.5px)] bg-white p-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] md:flex-row md:items-center">
                   <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal/10">
                     <span className="text-sm font-black text-teal">3</span>
