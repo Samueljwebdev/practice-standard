@@ -1,7 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
 import { createClient } from "@/lib/supabase/server"
-import { PROFESSIONS } from "@/lib/constants"
 import { professionToSlug, getBaseUrl } from "@/lib/seo"
 import { HomeHero } from "@/components/home/HomeHero"
 import { AnimateIn } from "@/components/ui/AnimateIn"
@@ -178,15 +177,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Professions ── */}
+      {/* ── Professions — curated shortlist ── */}
       <section className="bg-white py-20 px-6 border-b border-border/40">
         <div className="mx-auto max-w-5xl">
           <AnimateIn>
             <p className="mb-8 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-slate">
-              88 regulated professions covered
+              Popular roles
             </p>
             <div className="flex flex-wrap justify-center gap-2">
-              {PROFESSIONS.map(p => (
+              {[
+                { value: "aesthetic_nurse",      label: "Aesthetic Nurse" },
+                { value: "dental_hygienist",     label: "Dental Hygienist" },
+                { value: "veterinarian",          label: "Veterinarian" },
+                { value: "physiotherapist",       label: "Physiotherapist" },
+                { value: "private_gp",            label: "Private GP" },
+                { value: "optometrist",           label: "Optometrist" },
+                { value: "dental_nurse",          label: "Dental Nurse" },
+                { value: "dental_practice_manager", label: "Practice Manager" },
+              ].map(p => (
                 <Link
                   key={p.value}
                   href={`/roles/${professionToSlug(p.value)}`}
@@ -195,6 +203,12 @@ export default async function HomePage() {
                   {p.label}
                 </Link>
               ))}
+              <Link
+                href="/jobs"
+                className="rounded-full border-2 border-teal/30 bg-transparent px-4 py-2 text-sm font-semibold text-teal transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-teal hover:bg-teal hover:text-off-white"
+              >
+                Browse all 88 roles →
+              </Link>
             </div>
           </AnimateIn>
         </div>
