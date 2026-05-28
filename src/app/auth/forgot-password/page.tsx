@@ -17,17 +17,22 @@ export default function ForgotPasswordPage() {
     setLoading(true)
     setError("")
 
-    const redirectTo = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/reset-password`
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+    try {
+      const redirectTo = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/reset-password`
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
 
-    if (resetError) {
-      setError(resetError.message || "Something went wrong. Please try again.")
+      if (resetError) {
+        setError(resetError.message || "Something went wrong. Please try again.")
+        setLoading(false)
+        return
+      }
+
+      setSent(true)
       setLoading(false)
-      return
+    } catch {
+      setError("Something went wrong. Please try again.")
+      setLoading(false)
     }
-
-    setSent(true)
-    setLoading(false)
   }
 
   if (sent) {
