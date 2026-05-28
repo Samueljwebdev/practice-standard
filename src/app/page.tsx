@@ -177,6 +177,51 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Team / social proof image ── */}
+      <section className="bg-off-white py-24 px-6 border-b border-border/40">
+        <div className="mx-auto max-w-5xl">
+          <AnimateIn>
+            <p className="mb-3 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-slate">
+              Built for practices like yours
+            </p>
+            <h2 className="mb-10 text-center text-2xl font-black tracking-[-0.02em] text-navy md:text-3xl">
+              The people who use The Practice Standard.
+            </h2>
+          </AnimateIn>
+          <AnimateIn delay={0.1}>
+            {/* Wide double-bezel image */}
+            <div className="rounded-[2rem] bg-gradient-to-b from-navy/5 to-navy/2 p-2 ring-1 ring-navy/8 shadow-[0_4px_40px_rgba(13,27,42,0.06)]">
+              <div className="relative aspect-[16/9] overflow-hidden rounded-[calc(2rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)]">
+                <Image
+                  src="/images/aesthetics-team.png"
+                  alt="Aesthetics clinic team — The Practice Standard"
+                  fill
+                  className="object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/50 via-transparent to-transparent" />
+                {/* Overlay caption */}
+                <div className="absolute bottom-5 left-5 flex items-center gap-3">
+                  <span className="rounded-full bg-mint/20 px-3 py-1 text-[10px] font-semibold text-mint backdrop-blur-sm border border-mint/20">
+                    Aesthetics &amp; MedSpa
+                  </span>
+                  <span className="text-[11px] text-white/60">Private clinic, South East England</span>
+                </div>
+              </div>
+            </div>
+          </AnimateIn>
+          {/* Discipline strip */}
+          <AnimateIn delay={0.18}>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              {["Dental", "Aesthetics", "Veterinary", "Optometry", "Physiotherapy", "Private Medical"].map(d => (
+                <span key={d} className="rounded-full border border-navy/10 bg-white px-4 py-1.5 text-[11px] font-semibold text-navy/60">
+                  {d}
+                </span>
+              ))}
+            </div>
+          </AnimateIn>
+        </div>
+      </section>
+
       {/* ── Professions — curated shortlist ── */}
       <section className="bg-white py-20 px-6 border-b border-border/40">
         <div className="mx-auto max-w-5xl">
@@ -321,15 +366,15 @@ export default async function HomePage() {
                 <div className="relative rounded-[2.5rem] bg-gradient-to-b from-white/10 to-white/4 p-2 ring-1 ring-white/10">
                   <div className="relative aspect-[3/4] overflow-hidden rounded-[calc(2.5rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)]">
                     <Image
-                      src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=600&q=80"
-                      alt="Private healthcare professional at work"
+                      src="/images/for-practices.png"
+                      alt="Private clinic manager — The Practice Standard"
                       fill
-                      className="object-cover"
+                      className="object-cover object-top"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-navy/10 to-transparent" />
                     <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/12 bg-white/10 p-4 backdrop-blur-2xl">
-                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Role posted</p>
-                      <p className="text-sm font-bold text-white">Senior Aesthetic Nurse — Manchester</p>
+                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">Practice posting</p>
+                      <p className="text-sm font-bold text-white">Clinic Manager — Bristol</p>
                     </div>
                   </div>
                 </div>
