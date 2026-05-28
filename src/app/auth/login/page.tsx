@@ -1,18 +1,21 @@
 "use client"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { Suspense } from "react"
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const resetSuccess = searchParams.get("reset") === "success"
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -36,6 +39,13 @@ export default function LoginPage() {
           <p className="text-xs font-semibold text-teal uppercase tracking-[0.18em] mb-2">Welcome back</p>
           <h1 className="text-2xl font-bold text-navy">Sign in</h1>
         </div>
+
+        {resetSuccess && (
+          <div className="bg-teal/8 border border-teal/20 rounded-xl px-4 py-3 mb-5 text-center">
+            <p className="text-sm font-medium text-teal">Password updated — sign in with your new password.</p>
+          </div>
+        )}
+
         <div className="bg-white border border-border rounded-2xl p-8 shadow-sm">
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
@@ -43,14 +53,23 @@ export default function LoginPage() {
               <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required className="mt-1" />
             </div>
             <div>
-              <Label htmlFor="password" className="text-navy/80 text-sm font-medium">Password</Label>
-              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required className="mt-1" />
+              <div className="flex items-center justify-between mb-1">
+                <Label htmlFor="password" className="text-navy/80 text-sm font-medium">Password</Label>
+                <Link href="/auth/forgot-password" className="text-xs text-teal hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
             </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-teal text-off-white py-2.5 rounded-full text-sm font-semibold hover:bg-teal/90 transition-colors disabled:opacity-60"
+              className="w-full bg-teal text-off-white py-3 rounded-full text-sm font-semibold hover:bg-teal/90 transition-colors disabled:opacity-60"
             >
               {loading ? "Signing in…" : "Sign in"}
             </button>
@@ -62,5 +81,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   )
 }

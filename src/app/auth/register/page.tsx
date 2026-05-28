@@ -54,14 +54,16 @@ export default function RegisterPage() {
 
     try {
       const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
-      if (signUpError || !data.user) {
-        const msg = signUpError?.message ?? ""
-        setError(
-          msg.includes("ISO-8859-1") || msg.includes("fetch")
-            ? "Registration failed. Please try again or contact support."
-            : msg || "Registration failed. Please try again."
-        )
+
+      if (signUpError) {
+        setError(signUpError.message || "Registration failed. Please try again.")
         setLoading(false)
+        return
+      }
+
+      // Email confirmation pending — user created successfully, just needs to verify
+      if (!data.user) {
+        router.push(`/auth/confirm?email=${encodeURIComponent(email)}`)
         return
       }
 
