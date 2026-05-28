@@ -52,40 +52,50 @@ export default function RegisterPage() {
     setLoading(true)
     setError("")
 
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
-    if (signUpError || !data.user) {
-      setError(signUpError?.message ?? "Registration failed. Please try again.")
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+      if (signUpError || !data.user) {
+        const msg = signUpError?.message ?? ""
+        setError(
+          msg.includes("ISO-8859-1") || msg.includes("fetch")
+            ? "Registration failed. Please try again or contact support."
+            : msg || "Registration failed. Please try again."
+        )
+        setLoading(false)
+        return
+      }
+
+      const { error: profileError } = await supabase.from("profiles").insert({ id: data.user.id, role })
+      if (profileError) {
+        setError("Account created but profile setup failed. Please contact support.")
+        setLoading(false)
+        return
+      }
+
+      if (role === "practice") {
+        await supabase.from("practices").insert({
+          user_id: data.user.id,
+          name,
+          practice_type: practiceType,
+        })
+      } else {
+        await supabase.from("candidates").insert({ user_id: data.user.id, full_name: name, profession: "" })
+      }
+
+      fetch("/api/auth/welcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, role }),
+      }).catch(() => {})
+
+      track("signup_completed", { role, ...(role === "practice" ? { practice_type: practiceType } : {}) })
+
+      router.push(role === "practice" ? "/practice/dashboard" : "/candidate/profile")
+      router.refresh()
+    } catch {
+      setError("Registration failed. Please check your connection and try again.")
       setLoading(false)
-      return
     }
-
-    const { error: profileError } = await supabase.from("profiles").insert({ id: data.user.id, role })
-    if (profileError) {
-      setError("Account created but profile setup failed. Please contact support.")
-      setLoading(false)
-      return
-    }
-
-    if (role === "practice") {
-      await supabase.from("practices").insert({
-        user_id: data.user.id,
-        name,
-        practice_type: practiceType,
-      })
-    } else {
-      await supabase.from("candidates").insert({ user_id: data.user.id, full_name: name, profession: "" })
-    }
-
-    fetch("/api/auth/welcome", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, name, role }),
-    }).catch(() => {})
-
-    track("signup_completed", { role, ...(role === "practice" ? { practice_type: practiceType } : {}) })
-
-    router.push(role === "practice" ? "/practice/dashboard" : "/candidate/profile")
-    router.refresh()
   }
 
   // Step 1: Role selection
