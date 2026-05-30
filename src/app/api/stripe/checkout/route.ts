@@ -8,6 +8,24 @@ export async function GET(request: Request) {
   const mode = searchParams.get("mode") ?? "listing"
   const base = process.env.NEXT_PUBLIC_BASE_URL
 
+  // TEMP: delete leftover sammytest customers created during verification
+  if (searchParams.get("cleanup") === "testcust" && searchParams.get("k") === "tps9f3k2x7q1") {
+    const deleted: string[] = []
+    let starting_after: string | undefined
+    for (let i = 0; i < 10; i++) {
+      const page = await stripe.customers.list({ limit: 100, ...(starting_after ? { starting_after } : {}) })
+      for (const cust of page.data) {
+        if ((cust.email ?? "").includes("sammytest+")) {
+          await stripe.customers.del(cust.id)
+          deleted.push(cust.email!)
+        }
+      }
+      if (!page.has_more) break
+      starting_after = page.data[page.data.length - 1]?.id
+    }
+    return NextResponse.json({ deleted, count: deleted.length })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.redirect(`${base}/auth/login`)
