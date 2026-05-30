@@ -8,6 +8,24 @@ export async function GET(request: Request) {
   const mode = searchParams.get("mode") ?? "listing"
   const base = process.env.NEXT_PUBLIC_BASE_URL
 
+  // TEMP: raw connectivity probe to api.stripe.com (bypasses the Stripe SDK)
+  if (searchParams.get("debug") === "net") {
+    const out: any = { keyPresent: !!process.env.STRIPE_SECRET_KEY, keyLen: (process.env.STRIPE_SECRET_KEY ?? "").length, keyPrefix: (process.env.STRIPE_SECRET_KEY ?? "").slice(0, 7) }
+    try {
+      const t0 = Date.now()
+      const resp = await fetch("https://api.stripe.com/v1/charges?limit=1", {
+        headers: { Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}` },
+      })
+      out.rawFetchStatus = resp.status
+      out.ms = Date.now() - t0
+      out.body = (await resp.text()).slice(0, 200)
+    } catch (e: any) {
+      out.rawFetchThrew = String(e?.message ?? e)
+      out.cause = String(e?.cause?.message ?? e?.cause ?? "")
+    }
+    return NextResponse.json(out, { status: 200 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.redirect(`${base}/auth/login`)
