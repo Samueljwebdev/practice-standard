@@ -23,11 +23,15 @@ function LoginForm() {
     setError("")
     const { data, error: loginError } = await supabase.auth.signInWithPassword({ email, password })
     if (loginError || !data.user) {
-      setError("Invalid email or password")
+      if (loginError && /email not confirmed/i.test(loginError.message)) {
+        setError("Please confirm your email first — check your inbox for the confirmation link.")
+      } else {
+        setError("Invalid email or password")
+      }
       setLoading(false)
       return
     }
-    const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single()
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle()
     router.push(profile?.role === "practice" ? "/practice/dashboard" : "/candidate/dashboard")
     router.refresh()
   }

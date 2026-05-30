@@ -53,47 +53,60 @@ export default function RegisterPage() {
     setError("")
 
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          // Stored on the auth user; the server provisions the profile from this.
+          data: {
+            role,
+            full_name: name,
+            ...(role === "practice" ? { practice_type: practiceType } : {}),
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
 
       if (signUpError) {
-        setError(signUpError.message || "Registration failed. Please try again.")
+        // Supabase returns this when the email is already registered.
+        if (/already registered|already exists/i.test(signUpError.message)) {
+          setError("An account with this email already exists. Try signing in instead.")
+        } else {
+          setError(signUpError.message || "Registration failed. Please try again.")
+        }
         setLoading(false)
         return
       }
 
-      // Email confirmation pending — user created successfully, just needs to verify
       if (!data.user) {
-        router.push(`/auth/confirm?email=${encodeURIComponent(email)}`)
-        return
-      }
-
-      const { error: profileError } = await supabase.from("profiles").insert({ id: data.user.id, role })
-      if (profileError) {
-        setError("Account created but profile setup failed. Please contact support.")
+        setError("Registration failed. Please try again.")
         setLoading(false)
         return
       }
 
-      if (role === "practice") {
-        await supabase.from("practices").insert({
-          user_id: data.user.id,
-          name,
-          practice_type: practiceType,
-        })
-      } else {
-        await supabase.from("candidates").insert({ user_id: data.user.id, full_name: name, profession: "" })
-      }
-
-      fetch("/api/auth/welcome", {
+      // Create profile + practice/candidate rows server-side (service role —
+      // required because email confirmation is on and there's no session yet).
+      const provisionRes = await fetch("/api/auth/provision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, role }),
-      }).catch(() => {})
+        body: JSON.stringify({ userId: data.user.id }),
+      })
+      if (!provisionRes.ok) {
+        setError("Account created but setup failed. Please contact support@thepracticestandard.co.uk.")
+        setLoading(false)
+        return
+      }
 
       track("signup_completed", { role, ...(role === "practice" ? { practice_type: practiceType } : {}) })
 
-      router.push(role === "practice" ? "/practice/dashboard" : "/candidate/profile")
-      router.refresh()
+      // If a session came back, confirmation is off — go straight in.
+      // Otherwise the user must confirm their email first.
+      if (data.session) {
+        router.push(role === "practice" ? "/practice/dashboard" : "/candidate/profile")
+        router.refresh()
+      } else {
+        router.push(`/auth/confirm?email=${encodeURIComponent(email)}`)
+      }
     } catch {
       setError("Registration failed. Please check your connection and try again.")
       setLoading(false)
