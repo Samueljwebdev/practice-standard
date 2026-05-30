@@ -31,8 +31,25 @@ function LoginForm() {
       setLoading(false)
       return
     }
-    const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle()
-    router.push(profile?.role === "practice" ? "/practice/dashboard" : "/candidate/dashboard")
+    let role = (await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle()).data?.role
+
+    // Safety net: if the profile was never created (e.g. the confirm callback
+    // didn't run), provision it now from the user's signUp metadata.
+    if (!role) {
+      try {
+        const res = await fetch("/api/auth/provision", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: data.user.id }),
+        })
+        const json = await res.json().catch(() => null)
+        if (json?.role) role = json.role
+      } catch {
+        // fall through with default routing
+      }
+    }
+
+    router.push(role === "practice" ? "/practice/dashboard" : "/candidate/dashboard")
     router.refresh()
   }
 

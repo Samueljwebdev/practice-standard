@@ -78,33 +78,29 @@ export default function RegisterPage() {
         return
       }
 
-      if (!data.user) {
-        setError("Registration failed. Please try again.")
-        setLoading(false)
-        return
-      }
-
-      // Create profile + practice/candidate rows server-side (service role —
-      // required because email confirmation is on and there's no session yet).
-      const provisionRes = await fetch("/api/auth/provision", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: data.user.id }),
-      })
-      if (!provisionRes.ok) {
-        setError("Account created but setup failed. Please contact support@thepracticestandard.co.uk.")
-        setLoading(false)
-        return
-      }
-
       track("signup_completed", { role, ...(role === "practice" ? { practice_type: practiceType } : {}) })
 
-      // If a session came back, confirmation is off — go straight in.
-      // Otherwise the user must confirm their email first.
-      if (data.session) {
+      // With email confirmation enabled, Supabase returns no user and no
+      // session here ({ user: null, session: null }) — that is success, not a
+      // failure. The account's role/name are stored in the signUp metadata and
+      // the profile rows are created after the user confirms (in /auth/callback),
+      // with a safety-net provision on first login.
+      if (data.session && data.user) {
+        // Confirmation disabled — user is already signed in, so provision now.
+        const provisionRes = await fetch("/api/auth/provision", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: data.user.id }),
+        })
+        if (!provisionRes.ok) {
+          setError("Account created but setup failed. Please contact support@thepracticestandard.co.uk.")
+          setLoading(false)
+          return
+        }
         router.push(role === "practice" ? "/practice/dashboard" : "/candidate/profile")
         router.refresh()
       } else {
+        // Confirmation required — tell the user to check their inbox.
         router.push(`/auth/confirm?email=${encodeURIComponent(email)}`)
       }
     } catch {
