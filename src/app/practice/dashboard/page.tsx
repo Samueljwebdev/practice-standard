@@ -127,12 +127,12 @@ export default async function PracticeDashboard() {
                     {job.payment_status === "unpaid" ? "Unpaid" : job.status}
                   </span>
                   {job.payment_status === "unpaid" && (
-                    <Link
+                    <a
                       href={`/api/stripe/checkout?jobId=${job.id}`}
                       className="border-2 border-teal/25 text-teal text-xs px-3 py-1.5 rounded-full font-semibold hover:border-teal transition-colors"
                     >
                       Pay £149
-                    </Link>
+                    </a>
                   )}
                 </div>
               </div>
@@ -148,18 +148,18 @@ export default async function PracticeDashboard() {
             <p className="font-bold text-white mb-1">Hiring more than once? Unlimited listings for £249/month.</p>
             <p className="text-sm text-white/60">One agency hire costs £7,000+. Practice Pro pays for itself on the first listing.</p>
           </div>
-          <Link
+          <a
             href="/api/stripe/checkout?mode=subscription"
             className="shrink-0 bg-mint text-navy text-sm px-5 py-2.5 rounded-full font-semibold hover:bg-mint/85 transition-colors"
           >
             Upgrade to Pro
-          </Link>
+          </a>
         </div>
       )}
 
-      <Link href="/api/stripe/portal" className="text-sm text-brand-slate hover:text-teal transition-colors">
+      <a href="/api/stripe/portal" className="text-sm text-brand-slate hover:text-teal transition-colors">
         Manage billing →
-      </Link>
+      </a>
     </div>
   )
 }

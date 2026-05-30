@@ -88,7 +88,9 @@ export default function PostJobPage() {
       profession: form.profession,
       practice_type: practice?.practice_type ?? "unknown",
     })
-    router.push(`/api/stripe/checkout?jobId=${job.id}`)
+    // Full-page navigation (not router.push) — this is an API route that
+    // redirects to Stripe; client-side navigation would 404 looking for a page.
+    window.location.href = `/api/stripe/checkout?jobId=${job.id}`
   }
 
   return (
