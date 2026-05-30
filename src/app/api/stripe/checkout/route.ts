@@ -67,8 +67,18 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.redirect(session.url!)
-  } catch (err) {
+  } catch (err: any) {
     console.error("Stripe checkout failed:", err)
+    if (searchParams.get("debug") === "1") {
+      return NextResponse.json({
+        message: String(err?.message ?? err),
+        name: err?.name,
+        type: err?.type,
+        code: err?.code,
+        statusCode: err?.statusCode,
+        cause: String(err?.cause?.message ?? err?.cause ?? ""),
+      }, { status: 500 })
+    }
     const dest = mode === "subscription" ? "/pricing" : "/practice/dashboard"
     return NextResponse.redirect(`${base}${dest}?error=checkout`)
   }
