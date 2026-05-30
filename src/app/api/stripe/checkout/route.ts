@@ -8,6 +8,24 @@ export async function GET(request: Request) {
   const mode = searchParams.get("mode") ?? "listing"
   const base = process.env.NEXT_PUBLIC_BASE_URL
 
+  // TEMP: resolve price IDs for given product IDs using the live server key
+  if (searchParams.get("debug") === "prices") {
+    const ids = (searchParams.get("products") ?? "").split(",").filter(Boolean)
+    const out: any[] = []
+    for (const pid of ids) {
+      try {
+        const prices = await stripe.prices.list({ product: pid, limit: 10 })
+        out.push({
+          product: pid,
+          prices: prices.data.map(p => ({ id: p.id, amount: p.unit_amount, currency: p.currency, type: p.type, interval: p.recurring?.interval, active: p.active })),
+        })
+      } catch (e: any) {
+        out.push({ product: pid, error: String(e?.message ?? e) })
+      }
+    }
+    return NextResponse.json(out, { status: 200 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.redirect(`${base}/auth/login`)
