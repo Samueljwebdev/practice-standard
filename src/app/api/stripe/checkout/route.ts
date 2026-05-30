@@ -67,8 +67,21 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.redirect(session.url!)
-  } catch (err) {
+  } catch (err: any) {
     console.error("Stripe checkout failed:", err)
+    if (searchParams.get("debug") === "1") {
+      const listing = cleanEnv(process.env.STRIPE_LISTING_PRICE_ID)
+      const subRaw = process.env.STRIPE_SUBSCRIPTION_PRICE_ID ?? ""
+      const sub = cleanEnv(process.env.STRIPE_SUBSCRIPTION_PRICE_ID)
+      return NextResponse.json({
+        message: String(err?.message ?? err),
+        type: err?.type,
+        code: err?.code,
+        keyPrefix: cleanEnv(process.env.STRIPE_SECRET_KEY).slice(0, 8),
+        listingPrice: listing, listingLen: listing.length,
+        subPrice: sub, subLen: sub.length, subRawFirstCode: subRaw.charCodeAt(0),
+      }, { status: 500 })
+    }
     const dest = mode === "subscription" ? "/pricing" : "/practice/dashboard"
     return NextResponse.redirect(`${base}${dest}?error=checkout`)
   }
