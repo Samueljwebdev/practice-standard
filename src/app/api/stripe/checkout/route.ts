@@ -8,6 +8,24 @@ export async function GET(request: Request) {
   const mode = searchParams.get("mode") ?? "listing"
   const base = process.env.NEXT_PUBLIC_BASE_URL
 
+  // TEMP: create the live webhook endpoint and return its signing secret
+  if (searchParams.get("setup") === "webhook" && searchParams.get("k") === "tps9f3k2x7q1") {
+    const url = "https://www.thepracticestandard.co.uk/api/stripe/webhooks"
+    const events = [
+      "checkout.session.completed",
+      "customer.subscription.created",
+      "customer.subscription.updated",
+      "customer.subscription.deleted",
+    ]
+    const existing = await stripe.webhookEndpoints.list({ limit: 100 })
+    const match = existing.data.find(e => e.url === url)
+    if (match) {
+      return NextResponse.json({ existing: true, id: match.id, url: match.url, secretRetrievable: false })
+    }
+    const created = await stripe.webhookEndpoints.create({ url, enabled_events: events as any })
+    return NextResponse.json({ created: true, id: created.id, secret: created.secret })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.redirect(`${base}/auth/login`)
