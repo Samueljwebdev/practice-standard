@@ -1,4 +1,4 @@
-import { stripe } from "@/lib/stripe"
+import { stripe, cleanEnv } from "@/lib/stripe"
 import { createServiceClient } from "@/lib/supabase/server"
 import { sendJobPublishedConfirmation, sendSubscriptionActivated } from "@/lib/resend"
 import { NextResponse } from "next/server"
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
   let event: Stripe.Event
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
+    event = stripe.webhooks.constructEvent(body, sig, cleanEnv(process.env.STRIPE_WEBHOOK_SECRET))
   } catch {
     return new NextResponse("Webhook signature invalid", { status: 400 })
   }
