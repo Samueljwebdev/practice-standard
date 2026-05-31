@@ -54,6 +54,12 @@ export async function Header() {
           {!user && (
             <>
               <Link
+                href="/founding"
+                className="hidden sm:inline-block text-sm font-semibold text-teal hover:text-teal/80 px-3 py-1.5 rounded-lg hover:bg-teal/5 transition-colors"
+              >
+                Founding 41
+              </Link>
+              <Link
                 href="/pricing"
                 className="text-sm text-brand-slate hover:text-navy px-3 py-1.5 rounded-lg hover:bg-off-white transition-colors"
               >

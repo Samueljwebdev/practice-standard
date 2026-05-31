@@ -135,3 +135,11 @@ export const PRACTICE_TYPES = [
 
 export const LISTING_PRICE_GBP = 149
 export const SUBSCRIPTION_PRICE_GBP = 249
+
+// ── Founding 41 launch offer ──
+// Update FOUNDING_SPOTS_CLAIMED as practices join to keep the live counter honest.
+// (Or wire it to a Supabase count of founding members later.)
+export const FOUNDING_TOTAL_SPOTS = 41
+export const FOUNDING_SPOTS_CLAIMED = 0
+export const FOUNDING_PRICE_GBP = 199 // founder rate locked for life (vs £249 standard)
+export const FOUNDING_FREE_DAYS = 60
