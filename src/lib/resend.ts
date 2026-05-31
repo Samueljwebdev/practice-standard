@@ -37,14 +37,19 @@ export async function sendApplicationNotification({
   jobTitle,
   candidateName,
   jobSlug,
+  verificationLabel,
 }: {
   practiceEmail: string
   practiceName: string
   jobTitle: string
   candidateName: string
   jobSlug: string
+  verificationLabel?: string
 }) {
   const resend = getResend()
+  const verifiedLine = verificationLabel
+    ? `<p style="font-size:13px;color:${verificationLabel.startsWith("✓") ? "#0F3D3E" : "#9CA3AF"};margin-top:-8px;">${verificationLabel}</p>`
+    : ""
   await resend.emails.send({
     from: FROM,
     to: practiceEmail,
@@ -52,6 +57,7 @@ export async function sendApplicationNotification({
     html: html(`
       <p>Hi ${practiceName},</p>
       <p><strong>${candidateName}</strong> has applied for your role: <strong>${jobTitle}</strong>.</p>
+      ${verifiedLine}
       <a class="btn" href="${BASE}/practice/dashboard">View application →</a>
       <p>Log in to your dashboard to review their profile and respond.</p>
     `),

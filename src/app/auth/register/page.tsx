@@ -52,6 +52,12 @@ export default function RegisterPage() {
     setLoading(true)
     setError("")
 
+    // Remember where to return after signup (e.g. the job they wanted to apply to).
+    if (typeof window !== "undefined") {
+      const nx = new URLSearchParams(window.location.search).get("next")
+      if (nx && nx.startsWith("/")) localStorage.setItem("tps_next", nx)
+    }
+
     try {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,

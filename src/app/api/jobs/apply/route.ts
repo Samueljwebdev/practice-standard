@@ -1,5 +1,6 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server"
 import { sendApplicationNotification, sendApplicationConfirmation } from "@/lib/resend"
+import { regulatorName } from "@/lib/verification"
 import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
@@ -58,6 +59,18 @@ export async function POST(request: Request) {
     if (practiceUserId) {
       const serviceClient = createServiceClient()
       const { data: authUser } = await serviceClient.auth.admin.getUserById(practiceUserId)
+
+      // Authoritative verification status for this applicant (server-read).
+      const { data: ver } = await serviceClient
+        .from("candidate_verifications")
+        .select("status, regulator")
+        .eq("user_id", user.id)
+        .maybeSingle()
+      let verificationLabel: string | undefined
+      if (ver?.status === "verified") verificationLabel = `✓ Verified with ${regulatorName(ver.regulator)}`
+      else if (ver?.status === "pending_review") verificationLabel = "Registration pending verification"
+      else if (ver?.status === "failed") verificationLabel = "Registration not verified"
+
       if (authUser.user?.email) {
         await sendApplicationNotification({
           practiceEmail: authUser.user.email,
@@ -65,6 +78,7 @@ export async function POST(request: Request) {
           jobTitle: job.title,
           candidateName: candidate.full_name,
           jobSlug: job.slug,
+          verificationLabel,
         }).catch(() => {})
       }
     }

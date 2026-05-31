@@ -3,10 +3,18 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { PROFESSIONS, PROFESSION_CATEGORIES, UK_REGIONS } from "@/lib/constants"
+import { getRegulatorForProfession } from "@/lib/verification/regulators"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+interface Verification {
+  status: "unverified" | "verified" | "pending_review" | "failed" | "not_applicable"
+  regulator: string | null
+  verified_name?: string | null
+  reason?: string | null
+}
 
 export default function CandidateProfilePage() {
   const router = useRouter()
@@ -15,6 +23,8 @@ export default function CandidateProfilePage() {
   const [saved, setSaved] = useState(false)
   const [candidateId, setCandidateId] = useState<string | null>(null)
   const [isNewProfile, setIsNewProfile] = useState(false)
+  const [verification, setVerification] = useState<Verification | null>(null)
+  const [verifying, setVerifying] = useState(false)
 
   const [form, setForm] = useState({
     full_name: "",
@@ -25,6 +35,8 @@ export default function CandidateProfilePage() {
     bio: "",
     years_experience: "",
   })
+
+  const regulator = getRegulatorForProfession(form.profession)
 
   useEffect(() => {
     async function load() {
@@ -44,6 +56,8 @@ export default function CandidateProfilePage() {
           years_experience: data.years_experience?.toString() ?? "",
         })
       }
+      const { data: v } = await supabase.from("candidate_verifications").select("status, regulator, verified_name, reason").eq("user_id", user.id).maybeSingle()
+      if (v) setVerification(v as Verification)
     }
     load()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,12 +65,11 @@ export default function CandidateProfilePage() {
 
   function setField(field: string, value: string) {
     setForm(prev => ({ ...prev, [field]: value }))
+    if (field === "registration_number" || field === "profession") setVerification(null)
   }
 
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault()
+  async function persist() {
     if (!candidateId) return
-    setLoading(true)
     await supabase.from("candidates").update({
       full_name: form.full_name,
       profession: form.profession,
@@ -66,9 +79,41 @@ export default function CandidateProfilePage() {
       bio: form.bio || null,
       years_experience: form.years_experience ? parseInt(form.years_experience) : null,
     }).eq("id", candidateId)
+  }
+
+  async function handleVerify() {
+    if (!form.registration_number.trim()) return
+    setVerifying(true)
+    await persist() // make sure name/profession/number are saved before the server reads them
+    try {
+      const res = await fetch("/api/candidate/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ registrationNumber: form.registration_number.trim() }),
+      })
+      const json = await res.json()
+      setVerification({ status: json.status, regulator: json.regulator, verified_name: json.verifiedName, reason: json.reason })
+    } catch {
+      setVerification({ status: "pending_review", regulator: regulator?.id ?? null })
+    }
+    setVerifying(false)
+  }
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault()
+    if (!candidateId) return
+    setLoading(true)
+    await persist()
     setSaved(true)
     setLoading(false)
     setTimeout(() => setSaved(false), 3000)
+    // If they came here to apply for a specific job, send them back to it.
+    const next = typeof window !== "undefined" ? localStorage.getItem("tps_next") : null
+    if (next && next.startsWith("/")) {
+      localStorage.removeItem("tps_next")
+      router.push(next)
+      return
+    }
     router.push(isNewProfile ? "/jobs" : "/candidate/dashboard")
   }
 
@@ -104,28 +149,50 @@ export default function CandidateProfilePage() {
             <Label className="text-navy/80 text-sm font-medium">Full name</Label>
             <Input value={form.full_name} onChange={e => setField("full_name", e.target.value)} required className="mt-1" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label className="text-navy/80 text-sm font-medium">Profession</Label>
-              <Select value={form.profession} onValueChange={v => setField("profession", v as string)}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {PROFESSION_CATEGORIES.map(cat => (
-                    <SelectGroup key={cat}>
-                      <SelectLabel>{cat}</SelectLabel>
-                      {PROFESSIONS.filter(p => p.category === cat).map(p => (
-                        <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-navy/80 text-sm font-medium">Registration number</Label>
-              <Input placeholder="GDC / RCVS / GOC…" value={form.registration_number} onChange={e => setField("registration_number", e.target.value)} className="mt-1" />
-            </div>
+          <div>
+            <Label className="text-navy/80 text-sm font-medium">Profession</Label>
+            <Select value={form.profession} onValueChange={v => setField("profession", v as string)}>
+              <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {PROFESSION_CATEGORIES.map(cat => (
+                  <SelectGroup key={cat}>
+                    <SelectLabel>{cat}</SelectLabel>
+                    {PROFESSIONS.filter(p => p.category === cat).map(p => (
+                      <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                    ))}
+                  </SelectGroup>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
+          {/* Registration & verification */}
+          <div>
+            <Label className="text-navy/80 text-sm font-medium">
+              {regulator ? `${regulator.name} registration number` : "Registration number"}
+              {regulator && <span className="text-red-500"> *</span>}
+            </Label>
+            <div className="flex gap-2 mt-1">
+              <Input
+                placeholder={regulator ? regulator.pinHint : "If applicable"}
+                value={form.registration_number}
+                onChange={e => setField("registration_number", e.target.value)}
+                className="flex-1"
+              />
+              {regulator && (
+                <button
+                  type="button"
+                  onClick={handleVerify}
+                  disabled={verifying || !form.registration_number.trim()}
+                  className="shrink-0 px-4 rounded-xl border-2 border-teal/30 text-teal text-sm font-semibold hover:border-teal transition-colors disabled:opacity-50"
+                >
+                  {verifying ? "Checking…" : "Verify"}
+                </button>
+              )}
+            </div>
+            <VerificationBadge verification={verification} regulatorName={regulator?.name} hasRegulator={!!regulator} />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label className="text-navy/80 text-sm font-medium">Town / City</Label>
@@ -160,4 +227,29 @@ export default function CandidateProfilePage() {
       </div>
     </div>
   )
+}
+
+function VerificationBadge({ verification, regulatorName, hasRegulator }: { verification: Verification | null; regulatorName?: string; hasRegulator: boolean }) {
+  if (!hasRegulator) {
+    return <p className="text-xs text-brand-slate mt-2">This role type isn’t covered by a statutory UK register — no number needed.</p>
+  }
+  if (!verification || verification.status === "unverified") {
+    return <p className="text-xs text-brand-slate mt-2">Enter your {regulatorName} number and tap Verify. Practices see your verification status when you apply.</p>
+  }
+  if (verification.status === "verified") {
+    return (
+      <p className="text-xs text-teal font-medium mt-2 flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+        Verified with {regulatorName}{verification.verified_name ? ` — ${verification.verified_name}` : ""}
+      </p>
+    )
+  }
+  if (verification.status === "failed") {
+    const msg = verification.reason === "bad_format"
+      ? `That doesn’t look like a valid ${regulatorName} number — please check it.`
+      : "Please enter your registration number."
+    return <p className="text-xs text-red-600 mt-2">{msg}</p>
+  }
+  // pending_review (incl. not_found / lookup_unavailable / manual_only)
+  return <p className="text-xs text-amber-600 mt-2">Submitted for review — we’ll confirm your {regulatorName} registration shortly.</p>
 }
