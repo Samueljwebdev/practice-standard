@@ -18,14 +18,55 @@ export function generateMetadata(): Metadata {
 }
 
 interface PageProps {
-  searchParams: Promise<{ q?: string; profession?: string; region?: string; type?: string }>
+  searchParams: Promise<{ q?: string; profession?: string; region?: string; type?: string; page?: string }>
+}
+
+const PAGE_SIZE = 20
+
+function pageHref(sp: Awaited<PageProps["searchParams"]>, page: number): string {
+  const p = new URLSearchParams()
+  if (sp.q) p.set("q", sp.q)
+  if (sp.profession) p.set("profession", sp.profession)
+  if (sp.region) p.set("region", sp.region)
+  if (sp.type) p.set("type", sp.type)
+  if (page > 1) p.set("page", String(page))
+  const qs = p.toString()
+  return `/jobs${qs ? `?${qs}` : ""}`
+}
+
+function Pagination({ page, totalPages, total, sp }: { page: number; totalPages: number; total: number; sp: Awaited<PageProps["searchParams"]> }) {
+  if (totalPages <= 1) return null
+  const start = Math.max(1, Math.min(page - 2, totalPages - 4))
+  const end = Math.min(totalPages, start + 4)
+  const nums: number[] = []
+  for (let i = start; i <= end; i++) nums.push(i)
+  const linkBase = "inline-flex h-9 min-w-9 items-center justify-center rounded-full px-3 text-sm font-medium border transition-colors"
+  return (
+    <nav className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p className="text-xs text-brand-slate">{total} role{total === 1 ? "" : "s"} · page {page} of {totalPages}</p>
+      <div className="flex items-center gap-1.5">
+        {page > 1 ? (
+          <Link href={pageHref(sp, page - 1)} className={`${linkBase} border-navy/12 text-navy/70 hover:border-teal hover:text-teal`}>← Prev</Link>
+        ) : <span className={`${linkBase} border-navy/6 text-navy/25`}>← Prev</span>}
+        {nums.map(n => (
+          <Link key={n} href={pageHref(sp, n)} className={`${linkBase} ${n === page ? "bg-teal text-off-white border-teal" : "border-navy/12 text-navy/70 hover:border-teal hover:text-teal"}`}>{n}</Link>
+        ))}
+        {page < totalPages ? (
+          <Link href={pageHref(sp, page + 1)} className={`${linkBase} border-navy/12 text-navy/70 hover:border-teal hover:text-teal`}>Next →</Link>
+        ) : <span className={`${linkBase} border-navy/6 text-navy/25`}>Next →</span>}
+      </div>
+    </nav>
+  )
 }
 
 async function JobList({ searchParams }: { searchParams: Awaited<PageProps["searchParams"]> }) {
   const supabase = await createClient()
+  const page = Math.max(1, parseInt(searchParams.page ?? "1", 10) || 1)
+  const from = (page - 1) * PAGE_SIZE
+
   let query = supabase
     .from("jobs")
-    .select("*, practices(name, practice_type, city)")
+    .select("*, practices(name, practice_type, city)", { count: "exact" })
     .eq("status", "active")
     // Practice listings must be paid; aggregated (wrapped) listings are public.
     .or("payment_status.eq.paid,source.eq.aggregated")
@@ -36,7 +77,9 @@ async function JobList({ searchParams }: { searchParams: Awaited<PageProps["sear
   if (searchParams.type) query = query.eq("job_type", searchParams.type)
   if (searchParams.q) query = query.textSearch("title", searchParams.q, { type: "websearch" })
 
-  const { data: jobs } = await query.limit(50)
+  const { data: jobs, count } = await query.range(from, from + PAGE_SIZE - 1)
+  const total = count ?? 0
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
   if (!jobs?.length) {
     return (
@@ -59,9 +102,12 @@ async function JobList({ searchParams }: { searchParams: Awaited<PageProps["sear
   }
 
   return (
-    <div className="space-y-3 mt-5">
-      {jobs.map(job => <JobCard key={job.id} job={job as unknown as Job} />)}
-    </div>
+    <>
+      <div className="space-y-3 mt-5">
+        {jobs.map(job => <JobCard key={job.id} job={job as unknown as Job} />)}
+      </div>
+      <Pagination page={page} totalPages={totalPages} total={total} sp={searchParams} />
+    </>
   )
 }
 
