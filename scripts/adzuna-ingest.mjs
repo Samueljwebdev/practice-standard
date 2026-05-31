@@ -47,6 +47,32 @@ function toRegion(area, displayName){
 const strip = s => (s||"").replace(/<[^>]*>/g," ").replace(/&amp;/g,"&").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim()
 const slugify = s => strip(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,70)
 
+// Classify a job from its actual title (Adzuna keyword matching is loose, so we
+// can't trust the search term). Returns a profession value or null (drop dental
+// + non-clinical noise). Keep in sync with scripts/clean-aggregated.mjs.
+const DENTAL=/dentist|dental|orthodont|endodont|periodont|hygienist/i
+const BLOCK=/business development|account manager|\bsales\b|merchandiser|retail|maintenance|\bhgv\b|driver|warehouse|logistics|it systems|it support|software|developer|\bengineer\b|research officer|marketing|recruit|finance|payroll|cleaner|porter|catering|\bchef\b|security|fundrais|volunteer|apprentice|work experience|student/i
+const TESTS=[
+ [/aesthetic.*(doctor|physician)|cosmetic doctor/i,"aesthetic_doctor"],
+ [/injector|dermal filler|botox|aesthetic (nurse|practitioner|clinician)|nurse prescriber|aesthetician|skin (specialist|therapist)|laser (technician|practitioner)|\baesthetic\b/i,"aesthetic_nurse"],
+ [/r\.?v\.?n\b|veterinary nurse|vet nurse/i,"vet_nurse"],
+ [/veterinary surgeon|veterinarian|\bvet\b/i,"veterinarian"],
+ [/optometrist/i,"optometrist"],
+ [/dispensing optician|optical (assistant|advisor|consultant)|optician/i,"optometrist"],
+ [/physiother|physio\b|sports therap|musculoskeletal|\bmsk\b/i,"physiotherapist"],
+ [/podiatr|chiropod/i,"podiatrist"],[/osteopath/i,"osteopath"],[/dietit|dietic/i,"dietitian"],
+ [/general practitioner|\bgp\b|private doctor|salaried gp/i,"private_gp"],
+ [/theatre (nurse|practitioner)|scrub nurse|recovery nurse|\bodp\b|operating department|anaesthetic (nurse|practitioner)/i,"theatre_nurse"],
+ [/practice nurse|treatment room nurse/i,"practice_nurse"],
+ [/sonograph/i,"sonographer"],[/radiograph/i,"radiographer"],[/phlebotom/i,"phlebotomist"],
+ [/health\s?care assistant|\bhca\b|nursing assistant|care assistant/i,"healthcare_assistant"],
+ [/specialist nurse|clinical nurse|\brgn\b|\brmn\b|registered nurse|staff nurse|nurse/i,"specialist_nurse"],
+ [/receptionist/i,"medical_receptionist"],[/medical secretary|secretary/i,"medical_secretary"],
+ [/practice manager|clinic manager|clinical lead|clinical director/i,"clinic_manager"],
+ [/coordinator|administrator|\badmin\b/i,"clinic_coordinator"],
+]
+function classify(t){ if(DENTAL.test(t))return null; if(BLOCK.test(t))return null; for(const [re,p] of TESTS)if(re.test(t))return p; return null }
+
 async function fetchPage(what, page){
   const u = new URL(`https://api.adzuna.com/v1/api/jobs/gb/search/${page}`)
   u.searchParams.set("app_id", ADZUNA_APP_ID)
@@ -63,13 +89,15 @@ async function fetchPage(what, page){
 
 const rows = new Map() // slug -> row
 let raw = 0
-for (const [what, profession] of SEARCHES){
+for (const [what] of SEARCHES){
   for (let p=1; p<=PAGES; p++){
     const results = await fetchPage(what, p)
     raw += results.length
     for (const it of results){
       const title = strip(it.title)
       if (!title) continue
+      const profession = classify(title)
+      if (!profession) continue // drop dental + non-clinical noise
       const company = strip(it.company?.display_name) || "Private practice"
       const city = strip((it.location?.display_name||"").split(",")[0]) || null
       const region = toRegion(it.location?.area, it.location?.display_name)
