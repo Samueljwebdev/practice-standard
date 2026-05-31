@@ -395,9 +395,10 @@ export default async function HomePage() {
                 <div className="relative rounded-[2.5rem] bg-gradient-to-b from-navy/6 to-navy/2 p-2 ring-1 ring-navy/8 order-2 md:order-1">
                   <div className="relative aspect-[3/4] overflow-hidden rounded-[calc(2.5rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]">
                     <Image
-                      src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80"
-                      alt="Registered healthcare professional"
+                      src="/images/aesthetics-consultation.jpg"
+                      alt="Aesthetics professional consulting a patient — The Practice Standard"
                       fill
+                      sizes="(max-width: 768px) 100vw, 600px"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-navy/25 via-transparent to-transparent" />
