@@ -67,6 +67,26 @@ export interface Job {
   practices?: Pick<Practice, "name" | "practice_type" | "city">
 }
 
+export interface Clinic {
+  id: string
+  slug: string
+  name: string
+  category: string | null
+  vertical: string | null
+  city: string | null
+  region: string | null
+  street: string | null
+  website: string | null
+  phone: string | null
+  rating: number | null
+  reviews_count: number | null
+  is_hiring: boolean
+  careers_url: string | null
+  claimed_by_practice_id: string | null
+  source: string
+  created_at: string
+}
+
 export interface Application {
   id: string
   job_id: string

@@ -45,6 +45,12 @@ export async function Header() {
           >
             Browse Jobs
           </Link>
+          <Link
+            href="/clinics"
+            className="hidden sm:inline-block text-sm text-brand-slate hover:text-navy px-3 py-1.5 rounded-lg hover:bg-off-white transition-colors"
+          >
+            Clinics
+          </Link>
           {!user && (
             <>
               <Link

@@ -4,6 +4,7 @@ import { PROFESSIONS, JOB_TYPES } from "@/lib/constants"
 import { professionToSlug, getBaseUrl } from "@/lib/seo"
 import Link from "next/link"
 import { ApplyButton } from "@/components/jobs/ApplyButton"
+import { ShareButton } from "@/components/jobs/ShareButton"
 import type { Metadata } from "next"
 
 interface Props { params: Promise<{ slug: string }> }
@@ -182,6 +183,11 @@ export default async function JobDetailPage({ params }: Props) {
           ) : (
             <p className="text-sm text-brand-slate text-center">Practice accounts cannot apply for jobs.</p>
           )}
+        </div>
+
+        <div className="flex items-center justify-between gap-3 pt-4 border-t border-border">
+          <p className="text-xs text-brand-slate">Share this role</p>
+          <ShareButton url={`${base}/jobs/${job.slug}`} title={job.title as string} />
         </div>
       </div>
 
