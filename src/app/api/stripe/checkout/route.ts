@@ -6,6 +6,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const jobId = searchParams.get("jobId")
   const mode = searchParams.get("mode") ?? "listing"
+  const plan = searchParams.get("plan") // "founder" → founder price; else standard
   const base = process.env.NEXT_PUBLIC_BASE_URL
 
   const supabase = await createClient()
@@ -33,13 +34,21 @@ export async function GET(request: Request) {
     }
 
     if (mode === "subscription") {
+      // Founder plan uses the locked-for-life founder price when configured;
+      // falls back to the standard subscription price if it isn't set yet.
+      const isFounder = plan === "founder"
+      const founderPrice = cleanEnv(process.env.STRIPE_FOUNDER_PRICE_ID)
+      const subPrice = isFounder && founderPrice
+        ? founderPrice
+        : cleanEnv(process.env.STRIPE_SUBSCRIPTION_PRICE_ID)
+
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
         mode: "subscription",
-        line_items: [{ price: cleanEnv(process.env.STRIPE_SUBSCRIPTION_PRICE_ID), quantity: 1 }],
-        success_url: `${base}/practice/dashboard?subscribed=true`,
-        cancel_url: `${base}/pricing`,
-        metadata: { practice_id: practice.id },
+        line_items: [{ price: subPrice, quantity: 1 }],
+        success_url: `${base}/practice/dashboard?subscribed=true${isFounder ? "&founder=1" : ""}`,
+        cancel_url: `${base}${isFounder ? "/founding" : "/pricing"}`,
+        metadata: { practice_id: practice.id, plan: isFounder ? "founder" : "standard" },
       })
       return NextResponse.redirect(session.url!)
     }

@@ -54,8 +54,12 @@ export default function RegisterPage() {
 
     // Remember where to return after signup (e.g. the job they wanted to apply to).
     if (typeof window !== "undefined") {
-      const nx = new URLSearchParams(window.location.search).get("next")
+      const params = new URLSearchParams(window.location.search)
+      const nx = params.get("next")
       if (nx && nx.startsWith("/")) localStorage.setItem("tps_next", nx)
+      // Remember a founding signup so the dashboard can offer the founder rate.
+      const pl = params.get("plan")
+      if (pl === "founder") localStorage.setItem("tps_plan", "founder")
     }
 
     try {

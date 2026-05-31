@@ -1,10 +1,10 @@
 import Link from "next/link"
+import { createClient } from "@/lib/supabase/server"
 import { AnimateIn } from "@/components/ui/AnimateIn"
 import {
   FOUNDING_TOTAL_SPOTS,
   FOUNDING_SPOTS_CLAIMED,
   FOUNDING_PRICE_GBP,
-  FOUNDING_FREE_DAYS,
   SUBSCRIPTION_PRICE_GBP,
   LISTING_PRICE_GBP,
 } from "@/lib/constants"
@@ -18,27 +18,27 @@ export function generateMetadata(): Metadata {
   const base = getBaseUrl()
   return {
     title: "Founding 41 | The Practice Standard — UK Private Healthcare Hiring",
-    description: `We're hand-picking ${FOUNDING_TOTAL_SPOTS} founding practices. ${FOUNDING_FREE_DAYS} days free, founder pricing locked for life, and a Founding Member badge. Verified candidates, no agency fees.`,
+    description: `${FOUNDING_TOTAL_SPOTS} founding practices only. Founder rate £${FOUNDING_PRICE_GBP}/month — locked for life, vs £${SUBSCRIPTION_PRICE_GBP} standard. Unlimited verified-candidate listings, no agency fees. Cancel any time.`,
     alternates: { canonical: `${base}/founding` },
   }
 }
 
 const BENEFITS = [
   {
-    title: `${FOUNDING_FREE_DAYS} days free`,
-    body: "Post unlimited roles and meet verified candidates for two full months before you pay a penny. No card games — see it work first.",
-  },
-  {
-    title: "Founder pricing — locked for life",
-    body: `When your free period ends, you stay at £${FOUNDING_PRICE_GBP}/month forever, even as the standard price rises to £${SUBSCRIPTION_PRICE_GBP} and beyond. Founding rate never changes.`,
+    title: "Founder rate — locked for life",
+    body: `£${FOUNDING_PRICE_GBP}/month, forever. As the standard price rises to £${SUBSCRIPTION_PRICE_GBP} and beyond, your rate never moves. Unlimited listings across every discipline you hire for.`,
   },
   {
     title: "Founding Member badge",
     body: "Your listings carry a Founding Member badge — early credibility with candidates, and a permanent marker that you backed this first.",
   },
   {
-    title: "A direct line to the founder",
-    body: "You help shape what we build next. Tell us what you need to hire better and it goes to the top of the list — not a support queue.",
+    title: "Verified candidates only",
+    body: "Every applicant's NMC / GMC / GDC / RCVS / GOC / HCPC registration is checked before they reach you. Private-practice professionals only — no NHS noise, no unregistered CVs.",
+  },
+  {
+    title: "Cancel any time — no contract",
+    body: "Month to month. No lock-in, no notice period, no setup fee. If it isn't earning its keep, leave — but founder pricing only exists while these 41 spots are open.",
   },
 ]
 
@@ -46,28 +46,28 @@ const STEPS = [
   {
     n: "01",
     title: "Claim your spot",
-    body: "Create a practice account and tell us your disciplines. Takes under two minutes — no card needed to start.",
+    body: "Create a practice account and tell us your disciplines. Under two minutes.",
   },
   {
     n: "02",
-    title: "Post your roles",
-    body: "List as many roles as you like across every discipline you hire for. Every applicant's professional registration is verified before they reach you.",
+    title: `Activate the founder rate`,
+    body: `Start your founder subscription — £${FOUNDING_PRICE_GBP}/month, locked for life. One card entry, then unlimited listings.`,
   },
   {
     n: "03",
-    title: "Hire — then lock founder pricing",
-    body: `Meet verified candidates for ${FOUNDING_FREE_DAYS} days free. Keep going at the locked £${FOUNDING_PRICE_GBP}/month founder rate, or stop any time. No contract.`,
+    title: "Post roles & hire",
+    body: "List as many roles as you like and meet register-verified candidates. Every applicant is screened before they reach you.",
   },
 ]
 
 const FAQ = [
   {
-    q: "What does a founding spot actually cost?",
-    a: `Nothing for the first ${FOUNDING_FREE_DAYS} days — post unlimited roles, free. After that you stay on the locked founder rate of £${FOUNDING_PRICE_GBP}/month for life (the standard price is £${SUBSCRIPTION_PRICE_GBP}). Cancel any time, no contract.`,
+    q: "What does a founding spot cost?",
+    a: `£${FOUNDING_PRICE_GBP}/month — charged when you activate, then locked at that rate for life (the standard price is £${SUBSCRIPTION_PRICE_GBP} and rising). It covers unlimited job listings across every discipline. Cancel any time, no contract.`,
   },
   {
     q: `Why only ${FOUNDING_TOTAL_SPOTS} practices?`,
-    a: `Founding members get founder pricing forever and a direct line to us — that only works at small scale. ${FOUNDING_TOTAL_SPOTS} lets us look after every one properly. Once the spots are gone, the offer closes.`,
+    a: `Founder pricing is locked for life and comes with a direct line to us — that only works at small scale. ${FOUNDING_TOTAL_SPOTS} lets us look after every founding practice properly. Once the spots are gone, the rate closes for good.`,
   },
   {
     q: "What's different about your candidates?",
@@ -78,12 +78,12 @@ const FAQ = [
     a: `Agencies charge 15–25% of first-year salary — up to £11,250 on a single £45k hire. Founder pricing is £${FOUNDING_PRICE_GBP}/month for unlimited roles across every discipline. One agency placement would fund you for years.`,
   },
   {
-    q: "Do I have to pay now to claim a spot?",
-    a: "No. You claim your founding spot by creating an account today. You only decide about paying after your free period — once you've already seen verified candidates come through.",
+    q: "Can I cancel?",
+    a: "Any time, from your dashboard — no notice period, no fee. You keep your founder rate for as long as you stay subscribed; if you cancel and the founding spots have closed, you'd rejoin at standard pricing.",
   },
   {
-    q: "What happens when the founding period ends?",
-    a: `You keep your founder rate of £${FOUNDING_PRICE_GBP}/month for as long as you stay — it never rises. If it's not for you, cancel before the free period ends and pay nothing.`,
+    q: "Do you also offer pay-per-listing?",
+    a: `Yes — a single listing is £${LISTING_PRICE_GBP} if you only hire occasionally. But the founder subscription at £${FOUNDING_PRICE_GBP}/month pays for itself the moment you post a second role, and the rate is locked for life.`,
   },
 ]
 
@@ -93,7 +93,24 @@ const CHECK = (
   </svg>
 )
 
-export default function FoundingPage() {
+export default async function FoundingPage() {
+  // Logged-in practices go straight to founder checkout; everyone else registers first.
+  let ctaHref = "/auth/register?plan=founder"
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data: practice } = await supabase
+        .from("practices")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle()
+      if (practice) ctaHref = "/api/stripe/checkout?mode=subscription&plan=founder"
+    }
+  } catch {
+    // fall through with the register link
+  }
+
   return (
     <>
       {/* ── Hero ── */}
@@ -122,9 +139,8 @@ export default function FoundingPage() {
 
           <AnimateIn delay={0.16}>
             <p className="text-[16px] leading-[1.8] text-brand-slate max-w-[540px] mx-auto mb-10">
-              We&apos;re hand-picking {FOUNDING_TOTAL_SPOTS} private practices to build this with.
-              {" "}{FOUNDING_FREE_DAYS} days free, founder pricing locked for life, and a Founding Member badge.
-              Verified candidates. No agency fees. No NHS noise.
+              {FOUNDING_TOTAL_SPOTS} practices lock in the founder rate: <strong className="text-navy">£{FOUNDING_PRICE_GBP}/month for life</strong>, vs £{SUBSCRIPTION_PRICE_GBP} standard.
+              Unlimited verified-candidate listings, a Founding Member badge, no agency fees. Cancel any time.
             </p>
           </AnimateIn>
 
@@ -147,7 +163,7 @@ export default function FoundingPage() {
           <AnimateIn delay={0.26}>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
-                href="/auth/register"
+                href={ctaHref}
                 className="group inline-flex items-center gap-3 rounded-full bg-teal px-6 py-3.5 text-sm font-semibold text-off-white shadow-[0_4px_28px_rgba(15,61,62,0.22)] transition-[box-shadow,transform] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_6px_36px_rgba(15,61,62,0.32)] active:scale-[0.98]"
               >
                 Claim your founding spot
@@ -166,7 +182,7 @@ export default function FoundingPage() {
 
           <AnimateIn delay={0.32}>
             <p className="text-xs text-brand-slate/60 mt-6">
-              No card to start · Cancel any time · Candidates always free
+              £{FOUNDING_PRICE_GBP}/mo locked for life · Cancel any time · Candidates always free
             </p>
           </AnimateIn>
         </div>
@@ -211,15 +227,15 @@ export default function FoundingPage() {
               One agency invoice would fund<br className="hidden md:block" /> your founder rate for years.
             </h2>
             <p className="text-white/50 text-sm leading-relaxed mb-12 max-w-lg">
-              Agency fees run 15–25% of first-year salary. On a £45k hire, that&apos;s up to £11,250 — paid once, for one person. Founder pricing is unlimited roles, every discipline.
+              Agency fees run 15–25% of first-year salary. On a £45k hire, that&apos;s up to £11,250 — paid once, for one person. Founder pricing is unlimited roles, every discipline, locked for life.
             </p>
           </AnimateIn>
 
           <div className="grid md:grid-cols-3 gap-4">
             {[
               { label: "Agency fee on a £45k hire", value: "£11,250", sub: "At 25% — standard placement fee", highlight: false },
-              { label: `Founder rate for 12 months`, value: `£${FOUNDING_PRICE_GBP * 12}`, sub: "Unlimited listings, all disciplines, locked for life", highlight: false },
-              { label: "Plus your first 60 days", value: "£0", sub: "Free while you see it work", highlight: true },
+              { label: "Founder rate for 12 months", value: `£${FOUNDING_PRICE_GBP * 12}`, sub: "Unlimited listings, all disciplines", highlight: false },
+              { label: "Your rate in year 5", value: `£${FOUNDING_PRICE_GBP}`, sub: "Still locked. It never rises.", highlight: true },
             ].map((item, i) => (
               <AnimateIn key={item.label} delay={0.08 + i * 0.06}>
                 <div className={`h-full rounded-[1.5rem] p-[1.5px] ${item.highlight ? "bg-gradient-to-b from-mint/40 to-mint/10" : "bg-gradient-to-b from-white/10 to-white/3"}`}>
@@ -296,11 +312,11 @@ export default function FoundingPage() {
               When they&apos;re gone,<br />they&apos;re gone.
             </h2>
             <p className="text-white/55 text-sm leading-[1.85] mb-10 max-w-md mx-auto">
-              Claim your founding spot today. {FOUNDING_FREE_DAYS} days free, founder pricing locked for life, no card to start.
+              Lock in £{FOUNDING_PRICE_GBP}/month for life before the {FOUNDING_TOTAL_SPOTS} spots close. Unlimited verified-candidate listings. Cancel any time.
             </p>
 
             <Link
-              href="/auth/register"
+              href={ctaHref}
               className="group inline-flex items-center gap-3 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-teal shadow-[0_4px_28px_rgba(0,0,0,0.12)] transition-[box-shadow,transform] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_6px_36px_rgba(0,0,0,0.2)] active:scale-[0.98]"
             >
               Claim your founding spot
@@ -310,7 +326,7 @@ export default function FoundingPage() {
             </Link>
 
             <p className="text-xs text-white/40 mt-6">
-              Pay-per-listing also available from £{LISTING_PRICE_GBP}. Candidates always free.
+              Prefer to pay per role? Single listings from £{LISTING_PRICE_GBP}. Candidates always free.
             </p>
           </AnimateIn>
         </div>
