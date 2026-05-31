@@ -20,11 +20,11 @@ function buildJobSchema(job: Record<string, unknown>, base: string): Record<stri
     },
     title: job.title,
     description: job.description,
-    directApply: true,
+    directApply: job.source !== "aggregated",
     hiringOrganization: {
       "@type": "Organization",
-      name: (job.practices as Record<string, unknown> | null)?.name ?? "Practice",
-      sameAs: (job.practices as Record<string, unknown> | null)?.website ?? undefined,
+      name: (job.practices as Record<string, unknown> | null)?.name ?? job.external_org_name ?? "Practice",
+      sameAs: (job.practices as Record<string, unknown> | null)?.website ?? job.external_org_url ?? undefined,
     },
     jobLocation: {
       "@type": "Place",
@@ -58,13 +58,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = await createClient()
   const { data: job } = await supabase
     .from("jobs")
-    .select("title, city, region, profession, practices(name)")
+    .select("title, city, region, profession, source, external_org_name, noindex, practices(name)")
     .eq("slug", slug)
     .single()
   if (!job) return { title: "Job Not Found" }
+  const org = (job as any).practices?.name ?? (job as any).external_org_name ?? "Private practice"
   return {
-    title: `${job.title} — ${(job as any).practices?.name} | The Practice Standard`,
+    title: `${job.title} — ${org} | The Practice Standard`,
     description: `${job.title} role in ${job.city ?? job.region}. Apply now on The Practice Standard.`,
+    // Aggregated listings are noindexed to protect the domain's SEO.
+    robots: { index: !(job as any).noindex, follow: true },
   }
 }
 
@@ -88,7 +91,9 @@ export default async function JobDetailPage({ params }: Props) {
   }
 
   const base = getBaseUrl()
+  const isExternal = job.source === "aggregated"
   const practicesData = job.practices as Record<string, unknown> | null
+  const orgName = isExternal ? (job.external_org_name ?? "Private practice") : ((practicesData?.name as string) ?? "")
   const professionLabel = PROFESSIONS.find(p => p.value === job.profession)?.label ?? job.profession
   const typeLabel = JOB_TYPES.find(t => t.value === job.job_type)?.label ?? job.job_type
   const profSlug = professionToSlug(job.profession)
@@ -109,7 +114,7 @@ export default async function JobDetailPage({ params }: Props) {
             <h1 className="text-2xl font-bold text-navy">{job.title}</h1>
             <span className="shrink-0 text-xs font-semibold bg-mint/20 text-teal px-2.5 py-1 rounded-full">{typeLabel}</span>
           </div>
-          <p className="text-brand-slate font-medium">{practicesData?.name as string ?? ""}</p>
+          <p className="text-brand-slate font-medium">{orgName}</p>
           <p className="text-brand-slate text-sm">{job.city ?? job.region}</p>
         </div>
 
@@ -149,7 +154,23 @@ export default async function JobDetailPage({ params }: Props) {
         )}
 
         <div className="pt-2">
-          {!user ? (
+          {isExternal ? (
+            <div className="space-y-2">
+              <a
+                href={job.source_url ?? job.external_org_url ?? "#"}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="flex w-full items-center justify-center bg-teal text-off-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-teal/90 transition-colors"
+              >
+                Apply on {orgName}&rsquo;s website →
+              </a>
+              <p className="text-[11px] text-brand-slate/70 text-center">
+                Sourced from {orgName}&rsquo;s public careers page · you apply directly with them.
+                {" "}
+                <a href="mailto:hello@thepracticestandard.co.uk?subject=Remove%20listing" className="underline hover:text-teal">Request removal</a>
+              </p>
+            </div>
+          ) : !user ? (
             <Link
               href={`/auth/register?next=/jobs/${job.slug}`}
               className="flex w-full items-center justify-center bg-teal text-off-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-teal/90 transition-colors"

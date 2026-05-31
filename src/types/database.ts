@@ -59,6 +59,11 @@ export interface Job {
   published_at: string | null
   expires_at: string | null
   created_at: string
+  source?: "practice" | "aggregated"
+  source_url?: string | null
+  external_org_name?: string | null
+  external_org_url?: string | null
+  noindex?: boolean
   practices?: Pick<Practice, "name" | "practice_type" | "city">
 }
 

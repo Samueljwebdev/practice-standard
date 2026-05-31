@@ -27,7 +27,8 @@ async function JobList({ searchParams }: { searchParams: Awaited<PageProps["sear
     .from("jobs")
     .select("*, practices(name, practice_type, city)")
     .eq("status", "active")
-    .eq("payment_status", "paid")
+    // Practice listings must be paid; aggregated (wrapped) listings are public.
+    .or("payment_status.eq.paid,source.eq.aggregated")
     .order("published_at", { ascending: false })
 
   if (searchParams.profession) query = query.eq("profession", searchParams.profession)

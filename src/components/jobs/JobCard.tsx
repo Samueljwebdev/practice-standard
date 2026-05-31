@@ -16,7 +16,10 @@ function formatSalary(min: number | null, max: number | null): string {
 export function JobCard({ job }: Props) {
   const professionLabel = PROFESSIONS.find(p => p.value === job.profession)?.label ?? job.profession
   const typeLabel = JOB_TYPES.find(t => t.value === job.job_type)?.label ?? job.job_type
-  const practiceName = (job as Job & { practices?: { name?: string } }).practices?.name ?? "Practice"
+  const isExternal = job.source === "aggregated"
+  const practiceName = isExternal
+    ? (job.external_org_name ?? "Healthcare practice")
+    : ((job as Job & { practices?: { name?: string } }).practices?.name ?? "Practice")
 
   return (
     <Link href={`/jobs/${job.slug}`}>
@@ -34,9 +37,16 @@ export function JobCard({ job }: Props) {
             <p className="text-xs text-brand-slate/60">{job.city ?? job.region}</p>
           </div>
 
-          <span className="shrink-0 inline-flex items-center rounded-full bg-mint/15 px-3 py-1 text-[10px] font-semibold text-teal border border-mint/30">
-            {typeLabel}
-          </span>
+          <div className="shrink-0 flex flex-col items-end gap-1.5">
+            <span className="inline-flex items-center rounded-full bg-mint/15 px-3 py-1 text-[10px] font-semibold text-teal border border-mint/30">
+              {typeLabel}
+            </span>
+            {isExternal && (
+              <span className="inline-flex items-center rounded-full bg-navy/5 px-2.5 py-0.5 text-[9px] font-medium text-brand-slate/70 border border-navy/8">
+                Sourced from the web
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2.5 mt-3.5 pt-3.5 border-t border-navy/6">
