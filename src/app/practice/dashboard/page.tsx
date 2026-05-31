@@ -127,15 +127,15 @@ export default async function PracticeDashboard({ searchParams }: { searchParams
             {jobs!.map((job: any) => (
               <div key={job.id} className="bg-white border border-border rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="font-semibold text-navy truncate">{job.title}</p>
+                  <Link href={`/practice/jobs/${job.id}`} className="font-semibold text-navy truncate block hover:text-teal transition-colors">{job.title}</Link>
                   <p className="text-sm text-brand-slate mt-0.5">
                     {job.city ?? job.region} · Posted {new Date(job.created_at).toLocaleDateString("en-GB")}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-sm text-brand-slate">
-                    {(job.applications as any)?.[0]?.count ?? 0} applicants
-                  </span>
+                  <Link href={`/practice/jobs/${job.id}`} className="text-sm text-brand-slate hover:text-teal transition-colors whitespace-nowrap">
+                    {(job.applications as any)?.[0]?.count ?? 0} applicants →
+                  </Link>
                   <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                     job.payment_status === "unpaid"
                       ? "bg-amber-100 text-amber-700"
