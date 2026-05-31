@@ -11,14 +11,17 @@ export default function TermsPage() {
       <div className="mb-10">
         <p className="text-xs font-semibold text-teal uppercase tracking-[0.18em] mb-3">Legal</p>
         <h1 className="text-3xl font-bold text-navy mb-2">Terms of Service</h1>
-        <p className="text-sm text-brand-slate">Last updated: 23 May 2026</p>
+        <p className="text-sm text-brand-slate">Last updated: 31 May 2026</p>
       </div>
 
       <div className="prose-custom space-y-8 text-[15px] leading-relaxed text-navy/80">
 
         <section className="space-y-3">
-          <h2 className="text-lg font-bold text-navy">1. About The Practice Standard</h2>
-          <p>The Practice Standard (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) operates the website at thepracticestandard.co.uk — a job board connecting healthcare practices with qualified professionals across the UK. We are not a recruitment agency. We do not act as an employer or agent for any party.</p>
+          <h2 className="text-lg font-bold text-navy">1. About Us and Our Role</h2>
+          <p>The Practice Standard (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) operates the website at thepracticestandard.co.uk — an online platform for advertising healthcare job vacancies in the UK.</p>
+          <p>We are an <strong className="text-navy font-semibold">advertising platform only</strong>. We are <strong className="text-navy font-semibold">not a recruitment agency, employment agency, or employment business</strong> within the meaning of the Employment Agencies Act 1973 or the Conduct of Employment Agencies and Employment Businesses Regulations 2003.</p>
+          <p>We do not introduce, select, recommend, supply, vet for suitability, or place candidates, and we are not an employer, agent, or party to any application, engagement, contract, or hiring decision between a practice and a candidate. Practices advertise their own vacancies and make their own hiring decisions; candidates choose which roles to apply for and apply directly.</p>
+          <p>Our fees are charged to practices for advertising and listing visibility only — we never charge a placement, introduction, or success fee, and the platform is free for candidates. We are not responsible for the content of any listing, the conduct of any user, the accuracy of any profile or application, or the outcome of any application or hiring process.</p>
           <p>By using our website, you agree to these Terms. If you do not agree, please stop using the site.</p>
         </section>
 
@@ -43,6 +46,7 @@ export default function TermsPage() {
             <li>We reserve the right to remove listings that are inaccurate, misleading, or in breach of UK employment law.</li>
           </ul>
           <p>Listings are activated once payment is confirmed. Pay-per-listing fees are non-refundable once a listing goes live. Subscriptions may be cancelled at any time; you retain access until the end of the current billing period.</p>
+          <p><strong className="text-navy font-semibold">Candidate verification.</strong> Where we display a registration or verification status (for example, a &ldquo;Verified&rdquo; badge, or a regulator and registration number), this is provided on a best-efforts, informational basis only. It is generated automatically or through limited checks, may be incomplete, out of date, or inaccurate, and is <strong className="text-navy font-semibold">not a guarantee</strong> of a candidate&rsquo;s registration, qualifications, identity, or right to work. As the prospective employer you remain solely responsible for your own pre-employment checks — including confirming current registration directly with the relevant regulator (such as the GDC, GMC, or NMC), right-to-work, references, and any DBS checks — before making any hiring decision.</p>
         </section>
 
         <section className="space-y-3">
@@ -53,6 +57,7 @@ export default function TermsPage() {
             <li>You hold any registrations, qualifications, or right to work that you claim.</li>
             <li>You consent to your application being shared with the relevant practice.</li>
           </ul>
+          <p>Where you submit a registration number for verification, you consent to us checking it against the relevant regulator&rsquo;s public register. Submitting a number does not guarantee a verified status, and a verified status is an informational indicator only — it is not an endorsement of you by us.</p>
           <p>We are not responsible for the outcome of any application or the conduct of any practice.</p>
         </section>
 
