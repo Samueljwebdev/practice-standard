@@ -15,7 +15,8 @@ const STEPS = [
   { n: 3, label: "Receive applications", done: false },
 ]
 
-export default async function PracticeDashboard() {
+export default async function PracticeDashboard({ searchParams }: { searchParams: Promise<{ claimed?: string }> }) {
+  const sp = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/auth/login")
@@ -39,6 +40,22 @@ export default async function PracticeDashboard() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
+
+      {sp.claimed && (
+        <div className="rounded-2xl bg-teal/8 border border-teal/20 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-navy flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} className="text-teal shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              Profile claimed{sp.claimed ? `: ${sp.claimed}` : ""}
+            </p>
+            <p className="text-xs text-brand-slate mt-0.5">Post a role to start receiving register-verified applicants — no agency fees, candidates always free.</p>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <Link href="/practice/post" className="bg-teal text-off-white text-xs px-4 py-2 rounded-full font-semibold hover:bg-teal/90 transition-colors whitespace-nowrap">Post a role</Link>
+            <a href="/api/stripe/checkout?mode=subscription" className="border-2 border-teal/30 text-teal text-xs px-4 py-2 rounded-full font-semibold hover:border-teal transition-colors whitespace-nowrap">Go Pro · £249/mo</a>
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
         <div>

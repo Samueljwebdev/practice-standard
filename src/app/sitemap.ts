@@ -21,6 +21,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  const { data: clinics } = await supabase.from("clinics").select("slug")
+  const clinicUrls: MetadataRoute.Sitemap = (clinics ?? []).map(c => ({
+    url: `${base}/clinics/${c.slug}`,
+    changeFrequency: "weekly" as const,
+    priority: 0.5,
+  }))
+
   const professionUrls: MetadataRoute.Sitemap = PROFESSIONS.map(p => ({
     url: `${base}/roles/${professionToSlug(p.value)}`,
     changeFrequency: "daily" as const,
@@ -45,12 +52,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: base, changeFrequency: "daily" as const, priority: 1 },
     { url: `${base}/jobs`, changeFrequency: "daily" as const, priority: 0.9 },
+    { url: `${base}/clinics`, changeFrequency: "daily" as const, priority: 0.7 },
     { url: `${base}/pricing`, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${base}/blog`, changeFrequency: "weekly" as const, priority: 0.7 },
     { url: `${base}/salary-benchmark`, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${base}/alternatives`, changeFrequency: "monthly" as const, priority: 0.6 },
     ...blogUrls,
     ...jobUrls,
+    ...clinicUrls,
     ...professionUrls,
     ...regionUrls,
   ]
