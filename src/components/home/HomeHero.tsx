@@ -43,9 +43,9 @@ export function HomeHero({ count }: { count: number }) {
             {/* Staggered headline */}
             <h1 className="mt-8 leading-[0.92] tracking-[-0.03em]">
               {HEADLINE.map((line, i) => (
-                <span key={i} className="block overflow-hidden pt-[0.04em] pb-[0.3em]">
+                <span key={i} className="block overflow-hidden text-[clamp(3rem,7vw,5.5rem)] leading-[0.92] pt-[0.06em] pb-[0.22em]">
                   <motion.span
-                    className={`block text-[clamp(3rem,7vw,5.5rem)] font-black ${line.accent ? "text-teal" : "text-navy"}`}
+                    className={`block font-black ${line.accent ? "text-teal" : "text-navy"}`}
                     initial={{ y: "115%", opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.85, delay: 0.1 + i * 0.08, ease }}
