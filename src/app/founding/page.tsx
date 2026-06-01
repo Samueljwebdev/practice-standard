@@ -6,6 +6,7 @@ import {
   FOUNDING_SPOTS_CLAIMED,
   FOUNDING_PRICE_GBP,
   FOUNDING_ANNUAL_PRICE_GBP,
+  FOUNDING_ANNUAL_PRICE_LABEL,
   SUBSCRIPTION_PRICE_GBP,
   LISTING_PRICE_GBP,
 } from "@/lib/constants"
@@ -39,7 +40,7 @@ const BENEFITS = [
   },
   {
     title: "Two ways to lock it in",
-    body: `Monthly at £${FOUNDING_PRICE_GBP} (cancel any time) or annual at £${FOUNDING_ANNUAL_PRICE_GBP} (2 months free). Either way the rate is yours for life — but founder pricing only exists while these ${FOUNDING_TOTAL_SPOTS} spots are open.`,
+    body: `Monthly at £${FOUNDING_PRICE_GBP} (cancel any time) or annual at £${FOUNDING_ANNUAL_PRICE_LABEL} (2 months free). Either way the rate is yours for life — but founder pricing only exists while these ${FOUNDING_TOTAL_SPOTS} spots are open.`,
   },
 ]
 
@@ -52,7 +53,7 @@ const STEPS = [
   {
     n: "02",
     title: `Activate the founder rate`,
-    body: `Start your founder plan — £${FOUNDING_PRICE_GBP}/month or £${FOUNDING_ANNUAL_PRICE_GBP}/year (2 months free), locked for life. One card entry, then unlimited listings.`,
+    body: `Start your founder plan — £${FOUNDING_PRICE_GBP}/month or £${FOUNDING_ANNUAL_PRICE_LABEL}/year (2 months free), locked for life. One card entry, then unlimited listings.`,
   },
   {
     n: "03",
@@ -64,7 +65,7 @@ const STEPS = [
 const FAQ = [
   {
     q: "What does a founding spot cost?",
-    a: `Two options, both locked for life: £${FOUNDING_PRICE_GBP}/month (cancel any time) or £${FOUNDING_ANNUAL_PRICE_GBP}/year (2 months free, paid annually). Both cover unlimited listings across every discipline. Standard pricing is £${SUBSCRIPTION_PRICE_GBP}/month and rising.`,
+    a: `Two options, both locked for life: £${FOUNDING_PRICE_GBP}/month (cancel any time) or £${FOUNDING_ANNUAL_PRICE_LABEL}/year (2 months free, paid annually). Both cover unlimited listings across every discipline. Standard pricing is £${SUBSCRIPTION_PRICE_GBP}/month and rising.`,
   },
   {
     q: `Why only ${FOUNDING_TOTAL_SPOTS} practices?`,
@@ -143,7 +144,7 @@ export default async function FoundingPage() {
 
           <AnimateIn delay={0.16}>
             <p className="text-[16px] leading-[1.8] text-brand-slate max-w-[540px] mx-auto mb-10">
-              {FOUNDING_TOTAL_SPOTS} practices lock in the founder rate: <strong className="text-navy">£{FOUNDING_PRICE_GBP}/month — or £{FOUNDING_ANNUAL_PRICE_GBP}/year (2 months free)</strong>, locked for life vs £{SUBSCRIPTION_PRICE_GBP} standard.
+              {FOUNDING_TOTAL_SPOTS} practices lock in the founder rate: <strong className="text-navy">£{FOUNDING_PRICE_GBP}/month — or £{FOUNDING_ANNUAL_PRICE_LABEL}/year (2 months free)</strong>, locked for life vs £{SUBSCRIPTION_PRICE_GBP} standard.
               Unlimited verified-candidate listings, a Founding Member badge, no agency fees.
             </p>
           </AnimateIn>
@@ -229,15 +230,15 @@ export default async function FoundingPage() {
                   <div aria-hidden className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-mint/20 blur-2xl" />
                   <div className="absolute top-5 right-5"><span className="text-[10px] font-bold text-teal bg-mint px-2.5 py-1 rounded-full uppercase tracking-[0.15em]">2 months free</span></div>
                   <p className="text-[10px] font-bold text-mint/70 uppercase tracking-[0.2em] mb-3">Founder annual</p>
-                  <h3 className="text-2xl font-black text-off-white leading-none mb-1">£{FOUNDING_ANNUAL_PRICE_GBP}<span className="text-sm font-medium text-off-white/55 ml-1.5">/ year</span></h3>
+                  <h3 className="text-2xl font-black text-off-white leading-none mb-1">£{FOUNDING_ANNUAL_PRICE_LABEL}<span className="text-sm font-medium text-off-white/55 ml-1.5">/ year</span></h3>
                   <p className="text-xs text-off-white/50 mt-2 mb-7">≈ £{annualMonthly}/mo · best value · locked for life</p>
                   <ul className="space-y-3 flex-1 mb-8">
-                    {[{ t: "Everything in monthly", b: false }, { t: "2 months free vs monthly", b: true }, { t: "Paid annually · 12-month term", b: false }, { t: `Locked at £${FOUNDING_ANNUAL_PRICE_GBP}/yr for life`, b: false }].map(f => (
+                    {[{ t: "Everything in monthly", b: false }, { t: "2 months free vs monthly", b: true }, { t: "Paid annually · 12-month term", b: false }, { t: `Locked at £${FOUNDING_ANNUAL_PRICE_LABEL}/yr for life`, b: false }].map(f => (
                       <li key={f.t} className="flex items-start gap-2.5 text-sm text-off-white/75"><span className="text-mint shrink-0 mt-1">{CHECK}</span><span className={f.b ? "font-semibold text-off-white" : ""}>{f.t}</span></li>
                     ))}
                   </ul>
                   <Link href={annualHref} className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-mint px-5 py-3 text-sm font-semibold text-navy shadow-[0_3px_20px_rgba(168,213,204,0.35)] transition-[box-shadow,transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-mint/90 hover:shadow-[0_5px_28px_rgba(168,213,204,0.5)] active:scale-[0.98]">
-                    Claim annual · £{FOUNDING_ANNUAL_PRICE_GBP}/yr
+                    Claim annual · £{FOUNDING_ANNUAL_PRICE_LABEL}/yr
                   </Link>
                 </div>
               </div>
@@ -374,7 +375,7 @@ export default async function FoundingPage() {
               When they&apos;re gone,<br />they&apos;re gone.
             </h2>
             <p className="text-white/55 text-sm leading-[1.85] mb-10 max-w-md mx-auto">
-              Lock in founder pricing for life — £{FOUNDING_PRICE_GBP}/month or £{FOUNDING_ANNUAL_PRICE_GBP}/year — before the {FOUNDING_TOTAL_SPOTS} spots close. Unlimited verified-candidate listings.
+              Lock in founder pricing for life — £{FOUNDING_PRICE_GBP}/month or £{FOUNDING_ANNUAL_PRICE_LABEL}/year — before the {FOUNDING_TOTAL_SPOTS} spots close. Unlimited verified-candidate listings.
             </p>
 
             <Link

@@ -143,3 +143,4 @@ export const FOUNDING_TOTAL_SPOTS = 41
 export const FOUNDING_SPOTS_CLAIMED = 0
 export const FOUNDING_PRICE_GBP = 199 // founder monthly rate, charged on signup, locked for life (vs £249 standard)
 export const FOUNDING_ANNUAL_PRICE_GBP = 1990 // founder annual: 2 months free vs £199×12 (~£166/mo); 12-month commitment
+export const FOUNDING_ANNUAL_PRICE_LABEL = FOUNDING_ANNUAL_PRICE_GBP.toLocaleString("en-GB") // "1,990" for display

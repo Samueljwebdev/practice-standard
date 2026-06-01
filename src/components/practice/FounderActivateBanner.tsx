@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { FOUNDING_PRICE_GBP, FOUNDING_ANNUAL_PRICE_GBP, SUBSCRIPTION_PRICE_GBP } from "@/lib/constants"
+import { FOUNDING_PRICE_GBP, FOUNDING_ANNUAL_PRICE_LABEL, SUBSCRIPTION_PRICE_GBP } from "@/lib/constants"
 
 /**
  * Shown on the practice dashboard when a practice signed up via the Founding 41
@@ -21,9 +21,9 @@ export function FounderActivateBanner({ isSubscribed }: { isSubscribed: boolean 
   if (!plan) return null
 
   const annual = plan === "founder_annual"
-  const priceLabel = annual ? `£${FOUNDING_ANNUAL_PRICE_GBP}/yr` : `£${FOUNDING_PRICE_GBP}/mo`
+  const priceLabel = annual ? `£${FOUNDING_ANNUAL_PRICE_LABEL}/yr` : `£${FOUNDING_PRICE_GBP}/mo`
   const subline = annual
-    ? `Activate your founder rate now — £${FOUNDING_ANNUAL_PRICE_GBP}/year (2 months free), locked for life. Unlimited verified-candidate listings.`
+    ? `Activate your founder rate now — £${FOUNDING_ANNUAL_PRICE_LABEL}/year (2 months free), locked for life. Unlimited verified-candidate listings.`
     : `Activate your founder rate now — £${FOUNDING_PRICE_GBP}/month, locked for life (vs £${SUBSCRIPTION_PRICE_GBP} standard). Unlimited verified-candidate listings. Cancel any time.`
 
   return (
