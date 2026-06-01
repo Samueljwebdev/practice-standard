@@ -59,7 +59,7 @@ export default function RegisterPage() {
       if (nx && nx.startsWith("/")) localStorage.setItem("tps_next", nx)
       // Remember a founding signup so the dashboard can offer the founder rate.
       const pl = params.get("plan")
-      if (pl === "founder") localStorage.setItem("tps_plan", "founder")
+      if (pl === "founder" || pl === "founder_annual") localStorage.setItem("tps_plan", pl)
     }
 
     try {

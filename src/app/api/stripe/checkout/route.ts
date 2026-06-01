@@ -34,13 +34,17 @@ export async function GET(request: Request) {
     }
 
     if (mode === "subscription") {
-      // Founder plan uses the locked-for-life founder price when configured;
-      // falls back to the standard subscription price if it isn't set yet.
-      const isFounder = plan === "founder"
-      const founderPrice = cleanEnv(process.env.STRIPE_FOUNDER_PRICE_ID)
-      const subPrice = isFounder && founderPrice
-        ? founderPrice
-        : cleanEnv(process.env.STRIPE_SUBSCRIPTION_PRICE_ID)
+      // Founder plans use the locked-for-life founder prices when configured;
+      // each falls back gracefully if its env isn't set yet.
+      const isFounderAnnual = plan === "founder_annual"
+      const isFounder = plan === "founder" || isFounderAnnual
+      const monthlyFounder = cleanEnv(process.env.STRIPE_FOUNDER_PRICE_ID)
+      const annualFounder = cleanEnv(process.env.STRIPE_FOUNDER_ANNUAL_PRICE_ID)
+      const standard = cleanEnv(process.env.STRIPE_SUBSCRIPTION_PRICE_ID)
+
+      let subPrice = standard
+      if (isFounderAnnual) subPrice = annualFounder || monthlyFounder || standard
+      else if (plan === "founder") subPrice = monthlyFounder || standard
 
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
@@ -48,7 +52,7 @@ export async function GET(request: Request) {
         line_items: [{ price: subPrice, quantity: 1 }],
         success_url: `${base}/practice/dashboard?subscribed=true${isFounder ? "&founder=1" : ""}`,
         cancel_url: `${base}${isFounder ? "/founding" : "/pricing"}`,
-        metadata: { practice_id: practice.id, plan: isFounder ? "founder" : "standard" },
+        metadata: { practice_id: practice.id, plan: isFounderAnnual ? "founder_annual" : isFounder ? "founder" : "standard" },
       })
       return NextResponse.redirect(session.url!)
     }
