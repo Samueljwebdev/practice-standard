@@ -91,7 +91,7 @@ export default function SalaryBenchmarkPage() {
           <div className="bg-navy rounded-2xl p-6 text-center">
             <p className="text-white font-semibold text-sm mb-1">Ready to post your role?</p>
             <p className="text-white/50 text-xs mb-4">
-              From £149 +VAT per listing. No agency fees. Registered professionals only.
+              From £149 per listing. No agency fees. Registered professionals only.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link

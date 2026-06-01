@@ -83,7 +83,7 @@ export function HiringCostCalculator() {
           </div>
         </div>
         <p className="text-[11px] text-brand-slate/55 text-center px-4 leading-relaxed">
-          Estimate only. Agency cost = salary × fee % × hires. Practice Standard = the cheaper of pay-per-listing (£149) or Practice Pro (£249/mo). Prices exclude VAT.
+          Estimate only. Agency cost = salary × fee % × hires. Practice Standard = the cheaper of pay-per-listing (£149) or Practice Pro (£249/mo).
         </p>
       </div>
     </div>

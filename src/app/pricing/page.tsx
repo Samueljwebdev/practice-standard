@@ -126,7 +126,7 @@ export default function PricingPage() {
                     <p className="text-[10px] font-bold text-brand-slate uppercase tracking-[0.2em] mb-3">Pay per listing</p>
                     <h2 className="text-2xl font-black text-navy leading-none mb-1">
                       £{LISTING_PRICE_GBP}
-                      <span className="text-sm font-medium text-brand-slate ml-1.5">+VAT / listing</span>
+                      <span className="text-sm font-medium text-brand-slate ml-1.5">/ listing</span>
                     </h2>
                     <p className="text-xs text-brand-slate/70 mt-2">Best for occasional hiring</p>
                   </div>
@@ -177,7 +177,7 @@ export default function PricingPage() {
                     <p className="text-[10px] font-bold text-mint/70 uppercase tracking-[0.2em] mb-3">Practice Pro</p>
                     <h2 className="text-2xl font-black text-off-white leading-none mb-1">
                       £{SUBSCRIPTION_PRICE_GBP}
-                      <span className="text-sm font-medium text-off-white/55 ml-1.5">+VAT / month</span>
+                      <span className="text-sm font-medium text-off-white/55 ml-1.5">/ month</span>
                     </h2>
                     <p className="text-xs text-off-white/50 mt-2">Best for practices hiring regularly</p>
                   </div>
@@ -213,7 +213,7 @@ export default function PricingPage() {
 
           <AnimateIn delay={0.2}>
             <p className="text-center text-xs text-brand-slate/50 mt-6">
-              All prices exclude VAT. Practice Pro billed monthly. Cancel any time.
+              Practice Pro billed monthly. Cancel any time.
             </p>
           </AnimateIn>
         </div>
@@ -309,7 +309,7 @@ export default function PricingPage() {
                       {/* Our row */}
                       <tr className="border-t-2 border-teal/20 bg-teal/4">
                         <td className="px-6 py-4.5 font-bold text-teal">The Practice Standard</td>
-                        <td className="px-6 py-4.5 font-bold text-teal">£{LISTING_PRICE_GBP} +VAT</td>
+                        <td className="px-6 py-4.5 font-bold text-teal">£{LISTING_PRICE_GBP}</td>
                         <td className="px-6 py-4.5 text-teal/70 text-xs font-medium hidden sm:table-cell">All 88 regulated professions</td>
                       </tr>
                     </tbody>

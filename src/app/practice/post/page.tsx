@@ -111,7 +111,7 @@ export default function PostJobPage() {
           <CardDescription>
             {practice?.subscription_status === "active"
               ? "Included in your Practice Pro subscription — post as many roles as you need."
-              : `£${LISTING_PRICE_GBP} + VAT · Active for 30 days · Goes live immediately after payment.`}
+              : `£${LISTING_PRICE_GBP} · Active for 30 days · Goes live immediately after payment.`}
           </CardDescription>
         </CardHeader>
         <CardContent>

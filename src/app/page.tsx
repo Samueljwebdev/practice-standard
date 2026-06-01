@@ -299,7 +299,7 @@ export default async function HomePage() {
                       {/* TPS highlight row */}
                       <tr className="bg-teal/6 border-t-2 border-teal/20">
                         <td className="px-6 py-4 font-bold text-teal">The Practice Standard</td>
-                        <td className="px-6 py-4 font-bold text-teal">£149 +VAT</td>
+                        <td className="px-6 py-4 font-bold text-teal">£149</td>
                         <td className="hidden px-6 py-4 text-xs font-bold text-teal sm:table-cell">Yes — all 88 professions</td>
                       </tr>
                     </tbody>

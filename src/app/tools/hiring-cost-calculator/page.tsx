@@ -49,7 +49,7 @@ export default function HiringCostCalculatorPage() {
           <p>A job board built for private practice flips the model. The Practice Standard charges <strong className="text-navy">£149 per listing</strong> (30 days) or <strong className="text-navy">£249/month</strong> for unlimited roles across every discipline — no percentage of salary, no placement fee. A single avoided agency placement typically covers a year of listings.</p>
           <p>And because every candidate&rsquo;s professional registration (NMC, GDC, RCVS, GOC, HCPC) is verified, you skip the other hidden cost of cheap job boards: clinical time wasted screening unqualified applicants.</p>
           <h2 className="text-xl font-bold text-navy">How the calculator works</h2>
-          <p>Agency cost = average salary × agency fee % × number of hires per year. The Practice Standard cost is the cheaper of pay-per-listing (£149 × hires) or Practice Pro (£249/month, unlimited). Your saving is the difference. Figures exclude VAT and are an estimate for comparison.</p>
+          <p>Agency cost = average salary × agency fee % × number of hires per year. The Practice Standard cost is the cheaper of pay-per-listing (£149 × hires) or Practice Pro (£249/month, unlimited). Your saving is the difference. Figures are an estimate for comparison.</p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link href="/pricing" className="rounded-full bg-teal text-off-white text-sm px-5 py-2.5 font-semibold hover:bg-teal/90 transition-colors">See pricing</Link>
             <Link href="/salary-benchmark" className="rounded-full border-2 border-navy/15 text-navy text-sm px-5 py-2.5 font-semibold hover:border-teal hover:text-teal transition-colors">Get the salary benchmark</Link>

@@ -38,7 +38,7 @@ export default function TermsPage() {
 
         <section className="space-y-3">
           <h2 className="text-lg font-bold text-navy">4. For Practices — Job Listings</h2>
-          <p>Practices may post job listings either on a pay-per-listing basis (currently £149 + VAT per listing, active for 30 days) or via a Practice Pro subscription (currently £249 + VAT per month, unlimited listings).</p>
+          <p>Practices may post job listings either on a pay-per-listing basis (currently £149 per listing, active for 30 days) or via a Practice Pro subscription (currently £249 per month, unlimited listings).</p>
           <ul className="list-disc pl-5 space-y-1.5 text-navy/75">
             <li>All listings must be for genuine, legal vacancies at a real UK practice.</li>
             <li>You must have authority to hire for the role you post.</li>

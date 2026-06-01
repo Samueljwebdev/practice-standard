@@ -267,7 +267,7 @@ export default async function JobsPage({ searchParams }: PageProps) {
           <div>
             <p className="text-[11px] font-semibold text-mint uppercase tracking-[0.2em] mb-2">For practices</p>
             <p className="text-xl font-black text-white leading-tight mb-1">Hiring? Reach registered professionals.</p>
-            <p className="text-white/50 text-sm">From £{149} +VAT. No agency fees. No NHS noise.</p>
+            <p className="text-white/50 text-sm">From £{149}. No agency fees. No NHS noise.</p>
           </div>
           <Link
             href="/pricing"

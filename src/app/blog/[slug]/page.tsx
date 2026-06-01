@@ -78,7 +78,7 @@ export default async function BlogPostPage({ params }: Props) {
                   <p className="text-xs font-semibold text-mint uppercase tracking-[0.18em] mb-2">Post a role</p>
                   <p className="text-white font-semibold text-sm mb-1">Reach registered professionals</p>
                   <p className="text-white/50 text-xs mb-4 leading-relaxed">
-                    From £149 +VAT per listing. No agency fees. No NHS noise.
+                    From £149 per listing. No agency fees. No NHS noise.
                   </p>
                   <Link
                     href="/auth/register"
