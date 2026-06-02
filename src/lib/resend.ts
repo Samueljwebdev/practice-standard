@@ -145,6 +145,115 @@ export async function sendSubscriptionActivated({
   })
 }
 
+// ─── Founder activation lifecycle ─────────────────────────────────────────────
+
+// Day 0 — sent the moment a founder subscription goes live. Sets the expectation
+// (what happens next, when applicants come) and routes straight to "post a role".
+export async function sendFounderWelcome({
+  practiceEmail,
+  practiceName,
+  annual,
+}: {
+  practiceEmail: string
+  practiceName: string
+  annual?: boolean
+}) {
+  const resend = getResend()
+  const rate = annual ? "£1,990/year (your founder rate, locked for life)" : "£199/month (your founder rate, locked for life)"
+  await resend.emails.send({
+    from: FROM,
+    to: practiceEmail,
+    subject: "You're a founding practice — here's what happens next",
+    html: html(`
+      <p>Hi ${practiceName},</p>
+      <p>You're in — one of our 41 founding practices, on ${rate}. Thank you for backing this early. Here's exactly what to do next so you start meeting verified candidates fast:</p>
+      <p><strong>1. Post your first role</strong> — it takes about two minutes. Lead with the salary and name your CPD budget; those two things double your qualified applicants.</p>
+      <a class="btn" href="${BASE}/practice/post">Post your first role →</a>
+      <p><strong>2. What to expect:</strong> your role goes live immediately to private-practice professionals only. Every applicant's registration is verified before they reach you, so your shortlist is people worth interviewing — not 40 CVs to wade through.</p>
+      <p>Reply to this email any time — it comes straight to me, and as a founding member you get a direct line. If you'd like, I'll even set your first role up for you.</p>
+      <p>— Sam, The Practice Standard</p>
+    `),
+  })
+}
+
+// Day ~1 — they paid but haven't posted a role yet.
+export async function sendPostRoleNudge({
+  practiceEmail,
+  practiceName,
+}: {
+  practiceEmail: string
+  practiceName: string
+}) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to: practiceEmail,
+    subject: "Your founder rate is live — let's post your first role",
+    html: html(`
+      <p>Hi ${practiceName},</p>
+      <p>Your founding membership is active, but you haven't posted a role yet — and you can't meet candidates until you do. It takes about two minutes.</p>
+      <a class="btn" href="${BASE}/practice/post">Post your first role →</a>
+      <p>A quick tip from the practices that fill roles fastest: put the salary band in, name the CPD budget, and say the appointment length. Vague ads get scrolled past; specific ones get answered.</p>
+      <p>Stuck or short on time? Just reply with the role and I'll set it up for you.</p>
+      <p>— Sam</p>
+    `),
+  })
+}
+
+// Day ~7 — first-week recap with their real numbers.
+export async function sendFirstWeekRecap({
+  practiceEmail,
+  practiceName,
+  jobCount,
+  applicantCount,
+}: {
+  practiceEmail: string
+  practiceName: string
+  jobCount: number
+  applicantCount: number
+}) {
+  const resend = getResend()
+  const body =
+    jobCount === 0
+      ? `<p>You've been a founding member for a week, but no role is live yet — so there's nothing for candidates to apply to. Let's fix that in two minutes.</p>
+         <a class="btn" href="${BASE}/practice/post">Post your first role →</a>`
+      : `<p>Here's your first week on The Practice Standard: <strong>${jobCount}</strong> role${jobCount === 1 ? "" : "s"} live and <strong>${applicantCount}</strong> verified applicant${applicantCount === 1 ? "" : "s"} so far.</p>
+         <a class="btn" href="${BASE}/practice/dashboard">Review in your dashboard →</a>
+         ${applicantCount === 0 ? `<p>No applicants yet? That's normal in the first week — and it's usually the ad, not the platform. Reply and I'll review your listing with you (salary, title, CPD) and push it to the right candidates.</p>` : `<p>Reply to any applicant from your dashboard. The faster you respond, the more likely you are to win the hire.</p>`}`
+  await resend.emails.send({
+    from: FROM,
+    to: practiceEmail,
+    subject: "Your first week on The Practice Standard",
+    html: html(`<p>Hi ${practiceName},</p>${body}<p>— Sam</p>`),
+  })
+}
+
+// Day ~14 — a role has been live two weeks with no applicants. Personal help.
+export async function sendNoApplicantsHelp({
+  practiceEmail,
+  practiceName,
+  jobTitle,
+}: {
+  practiceEmail: string
+  practiceName: string
+  jobTitle: string
+}) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to: practiceEmail,
+    subject: `Let's get applicants on your ${jobTitle} role`,
+    html: html(`
+      <p>Hi ${practiceName},</p>
+      <p>Your <strong>${jobTitle}</strong> role has been live for two weeks without an applicant. I don't want that to be your experience as a founding member, so let me help directly.</p>
+      <p>Nine times out of ten it's a small fix to the listing — a salary band that's missing or below market, a title candidates don't search for, or no mention of CPD. Reply with a "yes" and I'll review it with you personally and push it to the right candidates on our side.</p>
+      <a class="btn" href="${BASE}/practice/dashboard">View your listing →</a>
+      <p>You backed us early — I want you getting real value from it.</p>
+      <p>— Sam</p>
+    `),
+  })
+}
+
 // ─── Welcome emails ───────────────────────────────────────────────────────────
 
 export async function sendPracticeWelcome({

@@ -1,6 +1,6 @@
 import { stripe, cleanEnv } from "@/lib/stripe"
 import { createServiceClient } from "@/lib/supabase/server"
-import { sendJobPublishedConfirmation, sendSubscriptionActivated } from "@/lib/resend"
+import { sendJobPublishedConfirmation, sendSubscriptionActivated, sendFounderWelcome } from "@/lib/resend"
 import { NextResponse } from "next/server"
 import type Stripe from "stripe"
 
@@ -64,7 +64,17 @@ export async function POST(request: Request) {
     }
 
     if (session.mode === "subscription") {
-      // Email practice: Practice Pro activated
+      const plan = session.metadata?.plan // "founder" | "founder_annual" | "standard"
+      const isFounder = plan === "founder" || plan === "founder_annual"
+
+      // Stamp activation start (drives the lifecycle cron). Only set once.
+      await supabase
+        .from("practices")
+        .update({ activated_at: new Date().toISOString() })
+        .eq("id", practiceId)
+        .is("activated_at", null)
+
+      // Day-0 email: founder welcome for founders, standard for everyone else.
       const { data: practice } = await supabase
         .from("practices")
         .select("name, user_id")
@@ -73,10 +83,18 @@ export async function POST(request: Request) {
       if (practice?.user_id) {
         const { data: authUser } = await supabase.auth.admin.getUserById(practice.user_id)
         if (authUser.user?.email) {
-          await sendSubscriptionActivated({
-            practiceEmail: authUser.user.email,
-            practiceName: practice.name ?? "Practice",
-          }).catch(() => {})
+          if (isFounder) {
+            await sendFounderWelcome({
+              practiceEmail: authUser.user.email,
+              practiceName: practice.name ?? "Practice",
+              annual: plan === "founder_annual",
+            }).catch(() => {})
+          } else {
+            await sendSubscriptionActivated({
+              practiceEmail: authUser.user.email,
+              practiceName: practice.name ?? "Practice",
+            }).catch(() => {})
+          }
         }
       }
     }
