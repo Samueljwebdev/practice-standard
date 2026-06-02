@@ -26,12 +26,13 @@ const SEASONAL = {
 
 // Evergreen rotation pool (business + professional + photo posts).
 const EVERGREEN = [
- "01-agency-maths","p1-verify","04-ask-5","17-aesthetics-numbers","19-clinicians-private",
- "08-agency-vs-board","p3-worth","13-what-verified","02-private-boom","07-empty-chair",
- "p5-question","22-green-flags","11-time-to-fill","05-aesthetics-verify","p2-team",
- "21-how-it-works","03-salary-2026","16-will-i-get-quality","12-post-once","p7-greenflags",
- "09-always-agency","06-optometry","14-quality-volume","p4-bridge","20-good-hiring",
- "10-fill-no-agency","18-blind-spot","f18-returners","15-compliance","p6-chair",
+ "01-agency-maths","p1-verify","pp01-physio","04-ask-5","17-aesthetics-numbers","pp06-screening","19-clinicians-private",
+ "08-agency-vs-board","p3-worth","pp02-optometry","13-what-verified","02-private-boom","pp07-empty-chair","07-empty-chair",
+ "p5-question","pp10-male-nurse","22-green-flags","11-time-to-fill","pp03-vet","05-aesthetics-verify","p2-team",
+ "21-how-it-works","pp14-two-min","03-salary-2026","16-will-i-get-quality","pp04-gp","12-post-once","p7-greenflags",
+ "09-always-agency","pp13-aesthetics","06-optometry","14-quality-volume","pp08-team","p4-bridge","20-good-hiring",
+ "10-fill-no-agency","pp11-returner","18-blind-spot","f18-returners","pp15-verified","15-compliance","p6-chair",
+ "pp05-dental","pp09-owner","pp12-job-search",
 ]
 const FOUNDING = "23-founding-41"
 const fmt = (d) => d.toISOString().slice(0,10)
