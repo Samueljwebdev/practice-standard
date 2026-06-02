@@ -88,7 +88,11 @@ export default function RegisterPage() {
         return
       }
 
-      track("signup_completed", { role, ...(role === "practice" ? { practice_type: practiceType } : {}) })
+      track("signup_completed", {
+        role,
+        plan: typeof window !== "undefined" ? (new URLSearchParams(window.location.search).get("plan") || "none") : "none",
+        ...(role === "practice" ? { practice_type: practiceType } : {}),
+      })
 
       // With email confirmation enabled, Supabase returns no user and no
       // session here ({ user: null, session: null }) — that is success, not a
@@ -131,7 +135,7 @@ export default function RegisterPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <button
-              onClick={() => setRole("practice")}
+              onClick={() => { track("register_started", { role: "practice" }); setRole("practice") }}
               className="bg-white border-2 border-border rounded-2xl p-6 text-left hover:border-teal hover:shadow-sm transition-all group"
             >
               <div className="text-3xl mb-3">🏥</div>
@@ -139,7 +143,7 @@ export default function RegisterPage() {
               <p className="text-xs text-brand-slate mt-1">Post jobs and find professionals</p>
             </button>
             <button
-              onClick={() => setRole("candidate")}
+              onClick={() => { track("register_started", { role: "candidate" }); setRole("candidate") }}
               className="bg-white border-2 border-border rounded-2xl p-6 text-left hover:border-teal hover:shadow-sm transition-all group"
             >
               <div className="text-3xl mb-3">👩‍⚕️</div>

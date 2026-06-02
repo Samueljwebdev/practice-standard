@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { AnimateIn } from "@/components/ui/AnimateIn"
+import { TrackEvent } from "@/components/analytics/TrackEvent"
+import { PlanCTA } from "@/components/analytics/PlanCTA"
 import {
   FOUNDING_TOTAL_SPOTS,
   FOUNDING_SPOTS_CLAIMED,
@@ -118,6 +120,7 @@ export default async function FoundingPage() {
 
   return (
     <>
+      <TrackEvent event="founding_view" />
       {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-white">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -216,9 +219,9 @@ export default async function FoundingPage() {
                       <li key={f} className="flex items-start gap-2.5 text-sm text-navy/70"><span className="text-teal shrink-0 mt-1">{CHECK}</span><span>{f}</span></li>
                     ))}
                   </ul>
-                  <Link href={monthlyHref} className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border-2 border-teal/30 px-5 py-3 text-sm font-semibold text-teal transition-[border-color,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-teal hover:bg-teal/5 active:scale-[0.98]">
+                  <PlanCTA href={monthlyHref} plan="founder_monthly" className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border-2 border-teal/30 px-5 py-3 text-sm font-semibold text-teal transition-[border-color,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-teal hover:bg-teal/5 active:scale-[0.98]">
                     Claim monthly · £{FOUNDING_PRICE_GBP}/mo
-                  </Link>
+                  </PlanCTA>
                 </div>
               </div>
             </AnimateIn>
@@ -237,9 +240,9 @@ export default async function FoundingPage() {
                       <li key={f.t} className="flex items-start gap-2.5 text-sm text-off-white/75"><span className="text-mint shrink-0 mt-1">{CHECK}</span><span className={f.b ? "font-semibold text-off-white" : ""}>{f.t}</span></li>
                     ))}
                   </ul>
-                  <Link href={annualHref} className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-mint px-5 py-3 text-sm font-semibold text-navy shadow-[0_3px_20px_rgba(168,213,204,0.35)] transition-[box-shadow,transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-mint/90 hover:shadow-[0_5px_28px_rgba(168,213,204,0.5)] active:scale-[0.98]">
+                  <PlanCTA href={annualHref} plan="founder_annual" className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-mint px-5 py-3 text-sm font-semibold text-navy shadow-[0_3px_20px_rgba(168,213,204,0.35)] transition-[box-shadow,transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-mint/90 hover:shadow-[0_5px_28px_rgba(168,213,204,0.5)] active:scale-[0.98]">
                     Claim annual · £{FOUNDING_ANNUAL_PRICE_LABEL}/yr
-                  </Link>
+                  </PlanCTA>
                 </div>
               </div>
             </AnimateIn>

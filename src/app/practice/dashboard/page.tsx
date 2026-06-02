@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { FounderActivateBanner } from "@/components/practice/FounderActivateBanner"
+import { TrackEvent } from "@/components/analytics/TrackEvent"
 
 const STATUS_COLOR: Record<string, string> = {
   active: "bg-mint/20 text-teal",
@@ -16,7 +17,7 @@ const STEPS = [
   { n: 3, label: "Receive applications", done: false },
 ]
 
-export default async function PracticeDashboard({ searchParams }: { searchParams: Promise<{ claimed?: string }> }) {
+export default async function PracticeDashboard({ searchParams }: { searchParams: Promise<{ claimed?: string; subscribed?: string; founder?: string }> }) {
   const sp = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -43,6 +44,7 @@ export default async function PracticeDashboard({ searchParams }: { searchParams
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
 
       <FounderActivateBanner isSubscribed={isSubscribed} />
+      {sp.subscribed && <TrackEvent event="subscription_active" props={{ plan: sp.founder ? "founder" : "standard" }} />}
 
       {sp.claimed && (
         <div className="rounded-2xl bg-teal/8 border border-teal/20 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
