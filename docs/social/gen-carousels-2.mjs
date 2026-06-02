@@ -48,7 +48,7 @@ const carousels=[
 {id:"08-agency-vs-board",eyebrow:"An honest comparison",slides:[
  {t:"cover",headline:"Agency or job board?",sub:"We&rsquo;re not anti-agency. We&rsquo;re anti agency prices for &pound;149 roles."},
  {t:"points",rows:[{n:"&#9201;",t:"<b>Speed:</b> agency = days. Board = minutes, then it works for you."},{n:"&pound;",t:"<b>Cost:</b> &pound;3k&ndash;&pound;15k/hire vs &pound;149 a listing."},{n:"&#9673;",t:"<b>Control:</b> gatekept vs your own dashboard."},{n:"&check;",t:"<b>Quality:</b> both &mdash; if the board verifies registration. Ours does."}]},
- {t:"cta",headline:"Agencies for the rare exec search. A board for everything else.",sub:"From &pound;149, or &pound;249/mo unlimited."}]},
+ {t:"cta",headline:"Agencies for the rare exec search. A board for everything else.",sub:"From &pound;149, or &pound;199/mo founder &mdash; locked for life."}]},
 {id:"09-always-agency",eyebrow:"Before you call",slides:[
  {t:"cover",headline:"5 things to check before you call the agency again.",sub:"Not saying switch. Saying test."},
  {t:"points",rows:[{n:"1",t:"What did your last 3 placements cost &mdash; total?"},{n:"2",t:"Could that have funded a year of listings?"},{n:"3",t:"Do you own the candidate relationship, or the agency?"},{n:"4",t:"Are you paying for a network you could build?"},{n:"5",t:"When did you last <b>test</b> an alternative?"}]},
@@ -64,8 +64,8 @@ const carousels=[
  {t:"stat",stat:"&minus;68%",label:"EU vet registrants, post-Brexit."},
  {t:"cta",headline:"Speed + a verified process wins the good ones.",sub:"What&rsquo;s your time-to-fill right now?"}]},
 {id:"12-post-once",eyebrow:"One place",slides:[
- {t:"cover",headline:"Why does your practice post roles in 5 places?",sub:"Most private practices hire across multiple disciplines."},
- {t:"points",rows:[{n:"&times;",t:"A vet role on one board."},{n:"&times;",t:"A physio role on another."},{n:"&times;",t:"A nurse role on Indeed."},{n:"&times;",t:"5 logins. 5 dashboards. 5 invoices."},{n:"&check;",t:"<b>One board. Every discipline. One dashboard.</b>"}]},
+ {t:"cover",headline:"Your practice hires more than clinicians. Why juggle 3 boards?",sub:"A clinic is a nurse, a receptionist, a manager &mdash; not just one role."},
+ {t:"points",rows:[{n:"&times;",t:"A practice nurse on a specialist board."},{n:"&times;",t:"A receptionist on Indeed."},{n:"&times;",t:"A practice manager on LinkedIn."},{n:"&times;",t:"3 logins. 3 dashboards. 3 invoices."},{n:"&check;",t:"<b>One board. Every role you hire. One dashboard.</b>"}]},
  {t:"cta",headline:"Hire the whole team from one place.",sub:"How many platforms did your last 3 hires take?"}]},
 {id:"13-what-verified",eyebrow:"Verification",slides:[
  {t:"cover",headline:"What we check before a candidate reaches you.",sub:"Transparency over volume."},

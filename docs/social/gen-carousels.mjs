@@ -45,9 +45,9 @@ const carousels=[
 {id:"01-agency-maths",eyebrow:"The maths",slides:[
  {t:"cover",headline:"What a recruitment agency really costs you.",sub:"The numbers most practices never stop to do."},
  {t:"stat",stat:"&pound;10,000",label:"A &pound;50k clinical hire, via an agency at 20%.",note:"And that is before the UK&rsquo;s &pound;6,125 average cost-per-hire."},
- {t:"stat",stat:"&pound;249",label:"Practice Pro &mdash; per month. Unlimited roles, every discipline."},
+ {t:"stat",stat:"&pound;199",label:"Founding rate &mdash; per month, locked for life. Or &pound;1,990/year.",note:"vs &pound;249 standard. Only 41 founding spots."},
  {t:"points",rows:[{n:"=",t:"<b>One agency invoice</b> &asymp; a whole year of your hiring."},{n:"&check;",t:"Every role. Every discipline. One dashboard."},{n:"&check;",t:"Verified, private-practice professionals only."}]},
- {t:"cta",headline:"The agency isn&rsquo;t the only option. It&rsquo;s just the habit.",sub:"Post a verified role from &pound;149."}]},
+ {t:"cta",headline:"The agency isn&rsquo;t the only option. It&rsquo;s just the habit.",sub:"Founding 41: &pound;199/mo or &pound;1,990/yr, locked for life. /founding"}]},
 {id:"02-private-boom",eyebrow:"The market",slides:[
  {t:"cover",headline:"UK private healthcare is booming. The hiring isn&rsquo;t keeping up.",sub:"Five numbers that explain the gap."},
  {t:"stat",stat:"&pound;18.6bn",label:"The UK private healthcare market by 2033 (&pound;13.75bn today)."},
@@ -75,6 +75,12 @@ const carousels=[
  {t:"stat",stat:"10.3%",label:"Current vacancy rate. 21% of weekly hours are locum-covered."},
  {t:"points",rows:[{n:"!",t:"Only 44% of optometrists now work full-time."},{n:"!",t:"In a shortage, the practice is being interviewed too."}]},
  {t:"cta",headline:"Speed + verification wins the good ones.",sub:"Reach verified optometrists &mdash; from &pound;149."}]},
+{id:"23-founding-41",eyebrow:"Founding 41",slides:[
+ {t:"cover",headline:"We&rsquo;re hand-picking 41 founding practices.",sub:"Founder pricing, locked for life. Then it closes for good."},
+ {t:"points",rows:[{n:"&check;",t:"Unlimited verified-candidate listings"},{n:"&check;",t:"A Founding Member badge on your roles"},{n:"&check;",t:"Founder rate &mdash; <b>locked for life</b>"}]},
+ {t:"stat",stat:"&pound;199",label:"Per month &mdash; cancel any time. (vs &pound;249 standard.)"},
+ {t:"stat",stat:"&pound;1,990",label:"Per year &mdash; 2 months free, &asymp; &pound;166/mo.",note:"Best value. 12-month term, locked for life."},
+ {t:"cta",headline:"When the 41 spots are gone, they&rsquo;re gone.",sub:"Claim yours &mdash; thepracticestandard.co.uk/founding"}]},
 ]
 
 let count=0
