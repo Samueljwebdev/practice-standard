@@ -45,6 +45,9 @@ export default async function PracticeDashboard({ searchParams }: { searchParams
 
       <FounderActivateBanner isSubscribed={isSubscribed} />
       {sp.subscribed && <TrackEvent event="subscription_active" props={{ plan: sp.founder ? "founder" : "standard" }} />}
+      <div className="flex justify-end -mb-4">
+        <Link href="/refer" className="text-xs font-semibold text-teal hover:text-teal/80">Refer a practice — you both get a reward →</Link>
+      </div>
 
       {sp.claimed && (
         <div className="rounded-2xl bg-teal/8 border border-teal/20 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

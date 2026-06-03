@@ -309,6 +309,76 @@ export async function sendSignupNurture3({ practiceEmail, practiceName }: { prac
   })
 }
 
+// ─── Role intake (a "yes" lead sends their role) ──────────────────────────────
+
+export async function sendRoleIntakeToFounder({ to, d }: { to: string; d: Record<string, string> }) {
+  const resend = getResend()
+  const row = (k: string, v?: string) => v ? `<tr><td style="padding:6px 12px 6px 0;color:#6B7A80;">${k}</td><td style="padding:6px 0;font-weight:600;color:#0D1B2A;">${v}</td></tr>` : ""
+  await resend.emails.send({
+    from: FROM,
+    to,
+    replyTo: d.email,
+    subject: `New role to set up — ${d.practiceName || "a practice"}`,
+    html: html(`
+      <p>A practice sent their role via /setup — get it live fast:</p>
+      <table style="border-collapse:collapse;font-size:14px;">
+        ${row("Practice", d.practiceName)}${row("Contact", d.yourName)}${row("Email", d.email)}${row("Phone", d.phone)}
+        ${row("Role", d.roleTitle)}${row("Discipline", d.discipline)}${row("Salary", d.salary)}${row("Hours", d.hours)}${row("Location", d.location)}
+      </table>
+      ${d.notes ? `<p style="margin-top:12px;"><strong>Notes:</strong> ${d.notes}</p>` : ""}
+      <a class="btn" href="${BASE}/practice/post">Post it now →</a>
+    `),
+  })
+}
+
+export async function sendRoleIntakeConfirmation({ to, name }: { to: string; name: string }) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: "Got it — your role is on the way",
+    html: html(`
+      <p>Hi ${name},</p>
+      <p>Thanks — I've got your role details and I'll have your listing live shortly, in front of register-verified professionals only.</p>
+      <p>While you're here, lock in your founder rate (£199/mo or £1,990/yr, locked for life) so you can manage applications and post unlimited roles:</p>
+      <a class="btn" href="${BASE}/founding">Claim your founding spot →</a>
+      <p>Any questions, just reply — it comes straight to me. — Sam</p>
+    `),
+  })
+}
+
+// ─── Referral ─────────────────────────────────────────────────────────────────
+
+export async function sendReferralInvite({ to, referrerPractice, note }: { to: string; referrerPractice: string; note?: string }) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `${referrerPractice} thought The Practice Standard might help you`,
+    html: html(`
+      <p>Hi there,</p>
+      <p><strong>${referrerPractice}</strong> uses The Practice Standard to hire and thought it'd be useful for you too.</p>
+      ${note ? `<p style="font-style:italic;color:#374151;">"${note}"</p>` : ""}
+      <p>We're a UK job board built only for private practices — every candidate's registration is verified before they reach you, at a fraction of agency cost. As a referred practice you can still claim one of the 41 founding spots: £199/mo or £1,990/yr, locked for life.</p>
+      <a class="btn" href="${BASE}/founding">See the founding offer →</a>
+      <p>— Sam, The Practice Standard</p>
+    `),
+  })
+}
+
+export async function sendReferralNotice({ to, referrerPractice, friendEmail }: { to: string; referrerPractice: string; friendEmail: string }) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Referral: ${referrerPractice} → ${friendEmail}`,
+    html: html(`
+      <p><strong>${referrerPractice}</strong> referred <strong>${friendEmail}</strong>.</p>
+      <p>We've sent them an invite. If they sign up, apply the referrer's reward (an extra free month / featured listing) to ${referrerPractice}.</p>
+    `),
+  })
+}
+
 // ─── Founder ops: daily nudge, weekly digest, candidate newsletter ────────────
 
 export async function sendFounderDailyNudge({ to }: { to: string }) {
