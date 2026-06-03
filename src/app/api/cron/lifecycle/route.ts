@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createServiceClient } from "@/lib/supabase/server"
-import { sendPostRoleNudge, sendFirstWeekRecap, sendNoApplicantsHelp } from "@/lib/resend"
+import { sendPostRoleNudge, sendFirstWeekRecap, sendNoApplicantsHelp, sendSignupNurture1, sendSignupNurture2, sendSignupNurture3 } from "@/lib/resend"
 
 // Daily founder-activation lifecycle.
 // Day 0 welcome is sent from the Stripe webhook; this cron handles the
@@ -86,5 +86,35 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, nudge, week1, noApplicants, evaluated: practices?.length ?? 0 })
+  // ── Abandoned-signup nurture: registered as a practice but never paid ──
+  // activated_at is null for non-payers; we also skip any that are somehow
+  // already subscribed (e.g. legacy practices that paid before this feature).
+  const { data: abandoned } = await supabase
+    .from("practices")
+    .select("id, name, user_id, created_at, subscription_status, nurture1_sent_at, nurture2_sent_at, nurture3_sent_at")
+    .is("activated_at", null)
+    .gt("created_at", daysAgo(20))
+
+  let nurture1 = 0, nurture2 = 0, nurture3 = 0
+
+  for (const p of abandoned ?? []) {
+    if (p.subscription_status === "active") continue
+    const ageDays = (now - new Date(p.created_at as string).getTime()) / 86400000
+    let stage: 1 | 2 | 3 | null = null
+    if (!p.nurture1_sent_at && ageDays >= 1 && ageDays < 3) stage = 1
+    else if (!p.nurture2_sent_at && ageDays >= 3 && ageDays < 7) stage = 2
+    else if (!p.nurture3_sent_at && ageDays >= 7 && ageDays <= 16) stage = 3
+    if (!stage) continue
+
+    const email = await emailFor(p.user_id as string | null)
+    if (!email) continue
+    const name = (p.name as string) ?? "there"
+    try {
+      if (stage === 1) { await sendSignupNurture1({ practiceEmail: email, practiceName: name }); await supabase.from("practices").update({ nurture1_sent_at: new Date().toISOString() }).eq("id", p.id); nurture1++ }
+      else if (stage === 2) { await sendSignupNurture2({ practiceEmail: email, practiceName: name }); await supabase.from("practices").update({ nurture2_sent_at: new Date().toISOString() }).eq("id", p.id); nurture2++ }
+      else { await sendSignupNurture3({ practiceEmail: email, practiceName: name }); await supabase.from("practices").update({ nurture3_sent_at: new Date().toISOString() }).eq("id", p.id); nurture3++ }
+    } catch { /* non-fatal */ }
+  }
+
+  return NextResponse.json({ ok: true, nudge, week1, noApplicants, nurture1, nurture2, nurture3, evaluated: practices?.length ?? 0 })
 }

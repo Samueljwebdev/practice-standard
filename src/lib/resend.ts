@@ -254,6 +254,61 @@ export async function sendNoApplicantsHelp({
   })
 }
 
+// ─── Abandoned-signup nurture (registered, never paid) ────────────────────────
+
+export async function sendSignupNurture1({ practiceEmail, practiceName }: { practiceEmail: string; practiceName: string }) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to: practiceEmail,
+    subject: "You created an account — here's what you're missing",
+    html: html(`
+      <p>Hi ${practiceName},</p>
+      <p>You set up a practice account but haven't claimed your founding spot yet. Quick reminder of what it gets you:</p>
+      <p>• Unlimited verified-candidate listings — every applicant's registration checked before they reach you<br>
+         • Private-practice professionals only, no NHS noise, no 40-CV inbox<br>
+         • Founder pricing <strong>locked for life</strong> (£199/mo or £1,990/yr), and a Founding Member badge</p>
+      <a class="btn" href="${BASE}/founding">Claim your founding spot →</a>
+      <p>There are only 41 founding places, and they don't reopen. Reply if you've got a question — it comes straight to me.</p>
+      <p>— Sam, The Practice Standard</p>
+    `),
+  })
+}
+
+export async function sendSignupNurture2({ practiceEmail, practiceName }: { practiceEmail: string; practiceName: string }) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to: practiceEmail,
+    subject: "The maths most practices never stop to do",
+    html: html(`
+      <p>Hi ${practiceName},</p>
+      <p>One agency placement on a £45k hire runs up to £11,250 — paid once, for one introduction.</p>
+      <p>Your founder rate is <strong>£199/month for unlimited roles</strong>, every discipline, locked for life. One agency invoice would cover years of it. Same verified candidates, none of the percentage-of-salary fee.</p>
+      <a class="btn" href="${BASE}/founding">Lock your founder rate →</a>
+      <p>The agency was never your only option — it's just the habit.</p>
+      <p>— Sam</p>
+    `),
+  })
+}
+
+export async function sendSignupNurture3({ practiceEmail, practiceName }: { practiceEmail: string; practiceName: string }) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to: practiceEmail,
+    subject: "Founding spots are closing",
+    html: html(`
+      <p>Hi ${practiceName},</p>
+      <p>Last nudge on this — we're only taking 41 founding practices, and once they're gone the founder rate closes for good.</p>
+      <p>If you hire clinicians and you're tired of agency fees and unqualified CVs, this is the cheapest it will ever be: founder pricing locked for life, cancel any time.</p>
+      <a class="btn" href="${BASE}/founding">Claim your spot before it closes →</a>
+      <p>Not the right time? No problem — just ignore this and we won't keep nudging.</p>
+      <p>— Sam</p>
+    `),
+  })
+}
+
 // ─── Welcome emails ───────────────────────────────────────────────────────────
 
 export async function sendPracticeWelcome({

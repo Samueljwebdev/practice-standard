@@ -6,7 +6,11 @@ alter table practices
   add column if not exists activated_at           timestamptz,
   add column if not exists nudge_sent_at           timestamptz,
   add column if not exists week1_sent_at           timestamptz,
-  add column if not exists no_applicants_sent_at   timestamptz;
+  add column if not exists no_applicants_sent_at   timestamptz,
+  -- Abandoned-signup nurture (registered but never paid): three nudges.
+  add column if not exists nurture1_sent_at        timestamptz,
+  add column if not exists nurture2_sent_at        timestamptz,
+  add column if not exists nurture3_sent_at        timestamptz;
 
 -- Fast lookup for the cron (only paying, activated practices matter).
 create index if not exists practices_activated_at_idx
