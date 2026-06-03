@@ -170,6 +170,13 @@ export default async function JobDetailPage({ params }: Props) {
                 {" "}
                 <a href="mailto:hello@thepracticestandard.co.uk?subject=Remove%20listing" className="underline hover:text-teal">Request removal</a>
               </p>
+              <div className="mt-4 rounded-2xl border border-teal/20 bg-teal/5 p-4 text-center">
+                <p className="text-sm font-semibold text-navy">Is this {orgName}&rsquo;s vacancy?</p>
+                <p className="text-xs text-brand-slate mt-1 mb-3">It&rsquo;s already being seen by candidates here. Claim it free to manage applications and reach register-verified professionals.</p>
+                <a href={`/api/jobs/claim?jobId=${job.id}`} className="inline-flex items-center justify-center rounded-full border-2 border-teal/30 text-teal px-5 py-2 text-sm font-semibold hover:bg-teal/10 transition-colors">
+                  Claim this listing →
+                </a>
+              </div>
             </div>
           ) : !user ? (
             <Link

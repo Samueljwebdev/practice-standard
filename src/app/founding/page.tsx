@@ -17,6 +17,9 @@ import type { Metadata } from "next"
 
 const SPOTS_LEFT = Math.max(FOUNDING_TOTAL_SPOTS - FOUNDING_SPOTS_CLAIMED, 0)
 const CLAIMED_PCT = Math.round((FOUNDING_SPOTS_CLAIMED / FOUNDING_TOTAL_SPOTS) * 100)
+// Don't show a near-empty progress bar early — "0 claimed" is reverse social
+// proof. Reveal the live counter only once there's real traction.
+const SHOW_COUNTER = FOUNDING_SPOTS_CLAIMED >= 5
 
 export function generateMetadata(): Metadata {
   const base = getBaseUrl()
@@ -97,7 +100,8 @@ const CHECK = (
   </svg>
 )
 
-export default async function FoundingPage() {
+export default async function FoundingPage({ searchParams }: { searchParams: Promise<{ claimed?: string }> }) {
+  const justClaimed = (await searchParams)?.claimed === "1"
   // Logged-in practices go straight to founder checkout; everyone else registers first.
   let isPractice = false
   try {
@@ -121,6 +125,11 @@ export default async function FoundingPage() {
   return (
     <>
       <TrackEvent event="founding_view" />
+      {justClaimed && (
+        <div className="bg-teal text-off-white text-center text-sm font-semibold px-4 py-3">
+          ✓ Listing claimed. Lock in your founder rate below to manage applications and reach verified candidates.
+        </div>
+      )}
       {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-white">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -133,7 +142,7 @@ export default async function FoundingPage() {
             <span className="inline-flex items-center gap-2.5 rounded-full border border-teal/20 bg-teal/5 px-4 py-1.5 mb-8">
               <span className="h-1.5 w-1.5 rounded-full bg-teal animate-pulse" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-teal">
-                {SPOTS_LEFT} of {FOUNDING_TOTAL_SPOTS} founding spots left
+                {SHOW_COUNTER ? `${SPOTS_LEFT} of ${FOUNDING_TOTAL_SPOTS} founding spots left` : `Founding membership — ${FOUNDING_TOTAL_SPOTS} places only`}
               </span>
             </span>
           </AnimateIn>
@@ -152,8 +161,8 @@ export default async function FoundingPage() {
             </p>
           </AnimateIn>
 
-          {/* Spot counter */}
-          <AnimateIn delay={0.2}>
+          {/* Spot counter — only once there's real traction (see SHOW_COUNTER) */}
+          {SHOW_COUNTER && <AnimateIn delay={0.2}>
             <div className="mx-auto max-w-sm mb-10">
               <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.15em] text-brand-slate mb-2.5">
                 <span>{FOUNDING_SPOTS_CLAIMED} claimed</span>
@@ -166,7 +175,7 @@ export default async function FoundingPage() {
                 />
               </div>
             </div>
-          </AnimateIn>
+          </AnimateIn>}
 
           <AnimateIn delay={0.26}>
             <div className="flex flex-wrap items-center justify-center gap-3">
@@ -372,7 +381,7 @@ export default async function FoundingPage() {
           <AnimateIn>
             <span className="inline-flex items-center gap-2 rounded-full border border-mint/25 bg-mint/10 px-4 py-1.5 mb-8">
               <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">{SPOTS_LEFT} spots remaining</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">{SHOW_COUNTER ? `${SPOTS_LEFT} spots remaining` : `Only ${FOUNDING_TOTAL_SPOTS} places`}</span>
             </span>
             <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-black leading-[0.95] tracking-[-0.02em] text-white mb-4">
               When they&apos;re gone,<br />they&apos;re gone.
