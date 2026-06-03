@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createServiceClient } from "@/lib/supabase/server"
-import { sendPostRoleNudge, sendFirstWeekRecap, sendNoApplicantsHelp, sendSignupNurture1, sendSignupNurture2, sendSignupNurture3 } from "@/lib/resend"
+import { sendPostRoleNudge, sendFirstWeekRecap, sendNoApplicantsHelp, sendSignupNurture1, sendSignupNurture2, sendSignupNurture3, sendFounderDailyNudge, sendWeeklyDigest, sendCandidateNewsletter } from "@/lib/resend"
 
 // Daily founder-activation lifecycle.
 // Day 0 welcome is sent from the Stripe webhook; this cron handles the
@@ -116,5 +116,46 @@ export async function GET(request: Request) {
     } catch { /* non-fatal */ }
   }
 
-  return NextResponse.json({ ok: true, nudge, week1, noApplicants, nurture1, nurture2, nurture3, evaluated: practices?.length ?? 0 })
+  // ── Founder ops: daily nudge, weekly digest (Fri), candidate newsletter (1st) ──
+  const today = new Date(), dow = today.getUTCDay(), dom = today.getUTCDate()
+  const FOUNDER = process.env.FOUNDER_EMAIL ?? "samueljfx@gmail.com"
+  let nudged = false, digest = false, newsletter = 0
+
+  // Daily nudge — weekdays only
+  if (dow >= 1 && dow <= 5) {
+    try { await sendFounderDailyNudge({ to: FOUNDER }); nudged = true } catch { /* non-fatal */ }
+  }
+
+  // Weekly digest — Fridays
+  if (dow === 5) {
+    const weekAgo = daysAgo(7)
+    try {
+      const signups = (await supabase.from("practices").select("id", { count: "exact", head: true }).gt("created_at", weekAgo)).count ?? 0
+      const paying = (await supabase.from("practices").select("id", { count: "exact", head: true }).eq("subscription_status", "active")).count ?? 0
+      const applications = (await supabase.from("applications").select("id", { count: "exact", head: true }).gt("created_at", weekAgo)).count ?? 0
+      const jobs = (await supabase.from("jobs").select("id", { count: "exact", head: true }).eq("status", "active")).count ?? 0
+      await sendWeeklyDigest({ to: FOUNDER, signups, paying, applications, jobs }); digest = true
+    } catch { /* non-fatal */ }
+  }
+
+  // Candidate newsletter — 1st of the month
+  if (dom === 1) {
+    const { data: latestJobs } = await supabase
+      .from("jobs").select("title, city, slug").eq("status", "active")
+      .order("published_at", { ascending: false }).limit(6)
+    if (latestJobs && latestJobs.length) {
+      const { data: cands } = await supabase.from("candidates").select("user_id").limit(500)
+      for (const c of cands ?? []) {
+        try {
+          const { data: au } = await supabase.auth.admin.getUserById(c.user_id as string)
+          const email = au.user?.email
+          if (!email) continue
+          await sendCandidateNewsletter({ to: email, name: "there", jobs: latestJobs as { title: string; city: string | null; slug: string }[] })
+          newsletter++
+        } catch { /* non-fatal */ }
+      }
+    }
+  }
+
+  return NextResponse.json({ ok: true, nudge, week1, noApplicants, nurture1, nurture2, nurture3, nudged, digest, newsletter, evaluated: practices?.length ?? 0 })
 }

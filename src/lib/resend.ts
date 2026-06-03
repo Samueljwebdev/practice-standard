@@ -309,6 +309,67 @@ export async function sendSignupNurture3({ practiceEmail, practiceName }: { prac
   })
 }
 
+// ─── Founder ops: daily nudge, weekly digest, candidate newsletter ────────────
+
+export async function sendFounderDailyNudge({ to }: { to: string }) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: "Today's 3 — open your daily folder",
+    html: html(`
+      <p>Morning Sam,</p>
+      <p>Open today's folder (Desktop → <strong>The Practice Standard - Daily Plan</strong>) and do the three that move the number:</p>
+      <p>1. <strong>Post</strong> today's Instagram carousel + caption (and LinkedIn if it's a posting day).<br>
+         2. <strong>Send</strong> today's outreach emails — reply to any "yes" within the hour.<br>
+         3. <strong>Reply</strong> to every comment + DM.</p>
+      <p>~15 minutes. That's the whole job today.</p>
+      <a class="btn" href="${BASE}/founding">Your founding page →</a>
+    `),
+  })
+}
+
+export async function sendWeeklyDigest({ to, signups, paying, applications, jobs }: {
+  to: string; signups: number; paying: number; applications: number; jobs: number
+}) {
+  const resend = getResend()
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: `Your week: ${paying} paying · ${signups} new signups`,
+    html: html(`
+      <p>Friday numbers, Sam:</p>
+      <table style="width:100%;border-collapse:collapse;font-size:15px;margin:8px 0 16px;">
+        <tr><td style="padding:8px 0;color:#374151;">Paying practices (total)</td><td style="padding:8px 0;font-weight:700;text-align:right;color:#0F3D3E;">${paying}</td></tr>
+        <tr><td style="padding:8px 0;color:#374151;">New signups (this week)</td><td style="padding:8px 0;font-weight:700;text-align:right;color:#0F3D3E;">${signups}</td></tr>
+        <tr><td style="padding:8px 0;color:#374151;">Applications (this week)</td><td style="padding:8px 0;font-weight:700;text-align:right;color:#0F3D3E;">${applications}</td></tr>
+        <tr><td style="padding:8px 0;color:#374151;">Live job listings</td><td style="padding:8px 0;font-weight:700;text-align:right;color:#0F3D3E;">${jobs}</td></tr>
+      </table>
+      <p>Take 30 minutes now: update the tracker, then ask the one question — <strong>is the gap volume (scrape/send more) or conversion (offer/onboarding)?</strong> Act on that for next week.</p>
+      <p>First milestone is 5 paying. Keep going.</p>
+    `),
+  })
+}
+
+export async function sendCandidateNewsletter({ to, name, jobs }: {
+  to: string; name: string; jobs: { title: string; city: string | null; slug: string }[]
+}) {
+  const resend = getResend()
+  const list = jobs.map(j => `<li style="margin-bottom:6px;"><a href="${BASE}/jobs/${j.slug}" style="color:#0F3D3E;font-weight:600;">${j.title}</a>${j.city ? ` — ${j.city}` : ""}</li>`).join("")
+  await resend.emails.send({
+    from: FROM,
+    to,
+    subject: "New private-practice roles this month",
+    html: html(`
+      <p>Hi ${name},</p>
+      <p>Fresh private-practice roles on The Practice Standard — registration-verified, no NHS noise:</p>
+      <ul style="padding-left:18px;">${list}</ul>
+      <a class="btn" href="${BASE}/jobs">Browse all roles →</a>
+      <p style="font-size:13px;color:#6B7A80;">Tip for your next interview: ask "what's the CPD budget?" — £500–2k is healthy, below £500 is a red flag.</p>
+    `),
+  })
+}
+
 // ─── Welcome emails ───────────────────────────────────────────────────────────
 
 export async function sendPracticeWelcome({
