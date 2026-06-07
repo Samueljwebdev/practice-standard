@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { stripe, cleanEnv } from "@/lib/stripe"
+import { FOUNDING_TOTAL_SPOTS, FOUNDING_SPOTS_CLAIMED } from "@/lib/constants"
 import { NextResponse } from "next/server"
 
 export async function GET(request: Request) {
@@ -36,15 +37,20 @@ export async function GET(request: Request) {
     if (mode === "subscription") {
       // Founder plans use the locked-for-life founder prices when configured;
       // each falls back gracefully if its env isn't set yet.
-      const isFounderAnnual = plan === "founder_annual"
-      const isFounder = plan === "founder" || isFounderAnnual
+      // Founder pricing is capped at the 41 founding spots (FOUNDING_SPOTS_CLAIMED is the
+      // same counter that drives the public /founding tally). Once full, a request for any
+      // founder plan transparently falls back to standard pricing. While spots remain
+      // (claimed < total) behaviour is unchanged.
+      const foundingOpen = FOUNDING_SPOTS_CLAIMED < FOUNDING_TOTAL_SPOTS
+      const isFounderAnnual = foundingOpen && plan === "founder_annual"
+      const isFounder = foundingOpen && (plan === "founder" || plan === "founder_annual")
       const monthlyFounder = cleanEnv(process.env.STRIPE_FOUNDER_PRICE_ID)
       const annualFounder = cleanEnv(process.env.STRIPE_FOUNDER_ANNUAL_PRICE_ID)
       const standard = cleanEnv(process.env.STRIPE_SUBSCRIPTION_PRICE_ID)
 
       let subPrice = standard
       if (isFounderAnnual) subPrice = annualFounder || monthlyFounder || standard
-      else if (plan === "founder") subPrice = monthlyFounder || standard
+      else if (isFounder) subPrice = monthlyFounder || standard
 
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
