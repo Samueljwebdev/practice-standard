@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   // Fetch job + practice for email notification
   const { data: job } = await supabase
     .from("jobs")
-    .select("title, slug, practices(name, user_id)")
+    .select("title, slug, source, external_org_name, practices(name, user_id)")
     .eq("id", jobId)
     .single()
 
@@ -81,6 +81,16 @@ export async function POST(request: Request) {
           verificationLabel,
         }).catch(() => {})
       }
+    } else if ((job as Record<string, unknown>).source === "house") {
+      // House listing (no owning practice) — route the application to the founder.
+      const founder = process.env.FOUNDER_EMAIL ?? "samueljfx@gmail.com"
+      await sendApplicationNotification({
+        practiceEmail: founder,
+        practiceName: ((job as Record<string, unknown>).external_org_name as string | undefined) ?? "The Practice Standard",
+        jobTitle: job.title,
+        candidateName: candidate.full_name,
+        jobSlug: job.slug,
+      }).catch(() => {})
     }
   }
 

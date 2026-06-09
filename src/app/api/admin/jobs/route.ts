@@ -28,9 +28,15 @@ export async function POST(request: Request) {
   const now = new Date().toISOString()
   const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
 
+  // "house" = a listing not tied to any signed-up business (no practice_id).
+  // It stays indexed (our own content) and applications route to the founder.
+  const isHouse = practice_id === "house"
+
   const admin = createServiceClient()
   const { error } = await admin.from("jobs").insert({
-    practice_id,
+    practice_id: isHouse ? null : practice_id,
+    source: isHouse ? "house" : "practice",
+    external_org_name: isHouse ? ((d.org_name && d.org_name.trim()) || "The Practice Standard") : null,
     title,
     profession,
     job_type,

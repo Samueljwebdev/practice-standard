@@ -35,8 +35,12 @@ export function PostJobForm({ practices }: { practices: { id: string; name: stri
     <form onSubmit={submit} className="rounded-xl border-2 border-border bg-white p-5 grid grid-cols-2 gap-3">
       <select required value={form.practice_id ?? ""} onChange={e => set("practice_id", e.target.value)} className={`${INPUT} col-span-2`}>
         <option value="">Post on behalf of… (select a business)</option>
+        <option value="house">🏠 House — The Practice Standard (no business)</option>
         {practices.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
       </select>
+      {form.practice_id === "house" && (
+        <input className={`${INPUT} col-span-2`} placeholder="Org name to display (default: The Practice Standard)" value={form.org_name ?? ""} onChange={e => set("org_name", e.target.value)} />
+      )}
       <input required className={`${INPUT} col-span-2`} placeholder="Job title" value={form.title ?? ""} onChange={e => set("title", e.target.value)} />
       <input required className={INPUT} placeholder="Profession (e.g. Optometrist)" value={form.profession ?? ""} onChange={e => set("profession", e.target.value)} />
       <select className={INPUT} value={form.job_type} onChange={e => set("job_type", e.target.value)}>
