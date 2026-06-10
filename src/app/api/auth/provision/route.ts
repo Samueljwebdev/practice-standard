@@ -1,5 +1,6 @@
 import { createServiceClient } from "@/lib/supabase/server"
 import { sendPracticeWelcome, sendCandidateWelcome } from "@/lib/resend"
+import { addNewsletterContact } from "@/lib/newsletter"
 import { NextResponse } from "next/server"
 
 /**
@@ -87,6 +88,17 @@ export async function POST(request: Request) {
     } catch {
       // ignore — provisioning already succeeded
     }
+
+    // Every new practice and professional joins The Standard (our weekly brief).
+    // Runs once — this block is past the idempotency early-return — and is best-effort.
+    // Unsubscribe is handled by Resend on every broadcast.
+    const firstName = name.split(/\s+/)[0] || undefined
+    try {
+      await admin
+        .from("newsletter_subscribers")
+        .upsert({ email, first_name: name || null, source: `signup_${role}` }, { onConflict: "email" })
+    } catch {}
+    await addNewsletterContact(email, firstName).catch(() => {})
   }
 
   return NextResponse.json({ ok: true, role })
