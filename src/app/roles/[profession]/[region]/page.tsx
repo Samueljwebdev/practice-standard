@@ -20,10 +20,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const regionLabel = slugToRegion(region)
   if (!prof || !regionLabel) return { title: "Jobs | The Practice Standard" }
   const base = getBaseUrl()
+
+  // Noindex thin (zero-listing) region pages so 1,056 near-duplicate combos don't
+  // drag domain quality. They become indexable automatically once a role is posted;
+  // keep `follow` so link equity still flows to the profession hub and live jobs.
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from("jobs")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "active")
+    .eq("payment_status", "paid")
+    .eq("profession", prof.value)
+    .eq("region", regionLabel)
+
   return {
     title: `${prof.label} Jobs in ${regionLabel} | The Practice Standard`,
     description: `Find ${prof.label} jobs in ${regionLabel}. Browse permanent, part-time, locum and contract ${prof.label.toLowerCase()} roles at private practices across ${regionLabel} on The Practice Standard.`,
     alternates: { canonical: `${base}/roles/${profession}/${region}` },
+    robots: (count ?? 0) > 0 ? undefined : { index: false, follow: true },
   }
 }
 
