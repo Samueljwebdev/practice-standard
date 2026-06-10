@@ -94,7 +94,7 @@ export default async function JobDetailPage({ params }: Props) {
   const base = getBaseUrl()
   const isExternal = job.source === "aggregated"
   const practicesData = job.practices as Record<string, unknown> | null
-  const orgName = isExternal ? (job.external_org_name ?? "Private practice") : ((practicesData?.name as string) ?? "")
+  const orgName = isExternal ? (job.external_org_name ?? "Private practice") : ((practicesData?.name as string) ?? job.external_org_name ?? "Private practice")
   const professionLabel = PROFESSIONS.find(p => p.value === job.profession)?.label ?? job.profession
   const typeLabel = JOB_TYPES.find(t => t.value === job.job_type)?.label ?? job.job_type
   const profSlug = professionToSlug(job.profession)
