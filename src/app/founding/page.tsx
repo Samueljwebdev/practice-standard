@@ -73,6 +73,10 @@ const FAQ = [
     a: `Two options, both locked for life: £${FOUNDING_PRICE_GBP}/month (cancel any time) or £${FOUNDING_ANNUAL_PRICE_LABEL}/year (2 months free, paid annually). Both cover unlimited listings across every discipline. Standard pricing is £${SUBSCRIPTION_PRICE_GBP}/month and rising.`,
   },
   {
+    q: "What's the 30-day applicant guarantee?",
+    a: "Post a role in your first 30 days and if you don't get a verified applicant in that window, that month is free. We hand-match and verify candidates for founding practices — so an empty inbox is on us, not you.",
+  },
+  {
     q: `Why only ${FOUNDING_TOTAL_SPOTS} practices?`,
     a: `Founder pricing is locked for life and comes with a direct line to us — that only works at small scale. ${FOUNDING_TOTAL_SPOTS} lets us look after every founding practice properly. Once the spots are gone, the rate closes for good.`,
   },
@@ -201,6 +205,13 @@ export default async function FoundingPage({ searchParams }: { searchParams: Pro
             <p className="text-xs text-brand-slate/60 mt-6">
               From £{annualMonthly}/mo on annual · Locked for life · Candidates always free
             </p>
+          </AnimateIn>
+
+          <AnimateIn delay={0.38}>
+            <div className="mx-auto mt-7 inline-flex items-center gap-2.5 rounded-full border border-teal/25 bg-teal/5 px-4 py-2">
+              <span className="text-teal">{CHECK}</span>
+              <span className="text-[12px] font-semibold text-navy">30-day applicant guarantee — your first verified applicant within 30 days, or that month&rsquo;s free.</span>
+            </div>
           </AnimateIn>
         </div>
       </section>
