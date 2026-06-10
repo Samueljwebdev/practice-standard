@@ -21,6 +21,32 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "aesthetic-nurse-salary-uk-2026",
+    title: "Aesthetic Nurse Salary UK 2026: What You Can Actually Earn",
+    description: "What aesthetic nurses earn in 2026 — employed vs self-employed, the V300 prescriber premium, real day-rate maths on Botox and filler, and what pushes your income past £70k.",
+    date: "2026-06-10",
+    category: "Aesthetics",
+    readingTime: "7 min read",
+    blocks: [
+      { type: "p", text: "Aesthetic nursing has one of the widest pay ranges in healthcare — from a £35,000 employed salary to £100,000+ for a busy self-employed prescriber with their own client base. Where you land depends on three things: whether you're employed or self-employed, whether you hold the V300 independent prescribing qualification, and how many clients you can fill a day with. Here's the real picture for 2026." },
+      { type: "h2", text: "What aesthetic nurses earn in 2026" },
+      { type: "stats", items: [ { value: "£35k–£40k", label: "Employed, established clinic" }, { value: "£50k–£60k", label: "Employed + V300 prescriber" }, { value: "£70k–£100k+", label: "Self-employed / own clinic" }, { value: "£150–£300", label: "Per Botox appointment" } ] },
+      { type: "h2", text: "Employed vs self-employed" },
+      { type: "table", headers: ["Route", "Typical earnings (2026)", "Trade-off"], rows: [ ["Employed, non-prescriber", "£30,000 – £40,000", "Stable, but you work under a prescriber"], ["Employed, V300 prescriber", "£45,000 – £60,000", "Higher pay, full autonomy, employer security"], ["Self-employed (chair rental / mobile)", "£40,000 – £80,000+", "No cap, but you carry overheads + client acquisition"], ["Own clinic", "£70,000 – £100,000+", "Highest ceiling, full business risk"] ] },
+      { type: "h2", text: "The prescriber premium (V300)" },
+      { type: "p", text: "The single biggest lever on your income is the V300 Independent Nurse Prescriber qualification. It lets you prescribe prescription-only medicines — botulinum toxin, lidocaine-containing fillers — independently, rather than working under a prescribing supervisor. Employed prescribers command up to £50,000–£60,000; for the self-employed, it's the gateway to running your own practice. As the 2026 licensing scheme tightens who can legally treat, the prescriber qualification only becomes more valuable." },
+      { type: "h2", text: "How the day-rate maths actually works" },
+      { type: "p", text: "For self-employed practitioners, the economics are per-appointment, not per-hour. A Botox appointment generates £150–£300, and a skilled practitioner sees 4–6 in a day. Dermal filler is the highest-revenue treatment — a syringe is £250–£400, and a typical 1–2 syringe appointment brings in £300–£800. A full diary, not a salary, is what takes earnings past £70k." },
+      { type: "h2", text: "What pushes your income higher" },
+      { type: "ul", items: [ "V300 independent prescribing — the biggest single uplift.", "Advanced treatments (polynucleotides, skin boosters, threads) command higher per-session fees.", "A retained client base — repeat clients are the whole game when self-employed.", "Location — affluent areas support higher pricing.", "Reputation and before/after portfolio — directly drives bookings." ] },
+      { type: "callout", heading: "Your registration is your licence to earn", text: "Every employer worth working for will check your NMC registration and prescriber status. Keep your NMC pin and V300 status current and visible — on The Practice Standard, verified clinicians reach better employers faster." },
+      { type: "h2", text: "For employers: what to pay to hire one" },
+      { type: "p", text: "If you're hiring rather than earning: budget £35,000–£40,000 for an employed aesthetic nurse, £50,000–£60,000 for a V300 prescriber, and expect to compete on autonomy and commission, not just base. The strongest candidates can go self-employed and out-earn a salary — so the package and culture matter as much as the number." },
+      { type: "links", heading: "Next steps", items: [ { label: "How to hire an aesthetic nurse prescriber", href: "/blog/how-to-hire-aesthetic-nurse-prescriber" }, { label: "Find verified aesthetics roles", href: "/jobs" } ] },
+      { type: "p", text: "Figures drawn from 2026 UK market data (Glassdoor, Indeed, nurses.co.uk, aesthetics training-provider salary surveys); self-employed earnings vary widely with client base, location and overheads." },
+    ],
+  },
+  {
     slug: "how-to-hire-a-vet-2026",
     title: "How to Hire a Vet in 2026 (Without an Agency)",
     description: "Why hiring vets is so hard right now, what it costs, where to find RCVS-registered candidates directly, and how to write a role that gets replies — without paying 15–25% to a recruiter.",
