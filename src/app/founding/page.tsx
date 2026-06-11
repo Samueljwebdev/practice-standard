@@ -146,7 +146,7 @@ export default async function FoundingPage({ searchParams }: { searchParams: Pro
             <span className="inline-flex items-center gap-2.5 rounded-full border border-teal/20 bg-teal/5 px-4 py-1.5 mb-8">
               <span className="h-1.5 w-1.5 rounded-full bg-teal animate-pulse" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-teal">
-                {SHOW_COUNTER ? `${SPOTS_LEFT} of ${FOUNDING_TOTAL_SPOTS} founding spots left` : `Founding membership — ${FOUNDING_TOTAL_SPOTS} places only`}
+                {SHOW_COUNTER ? `${SPOTS_LEFT} of ${FOUNDING_TOTAL_SPOTS} founding spots left` : `Founding cohort — limited to ${FOUNDING_TOTAL_SPOTS} practices`}
               </span>
             </span>
           </AnimateIn>
@@ -392,7 +392,7 @@ export default async function FoundingPage({ searchParams }: { searchParams: Pro
           <AnimateIn>
             <span className="inline-flex items-center gap-2 rounded-full border border-mint/25 bg-mint/10 px-4 py-1.5 mb-8">
               <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">{SHOW_COUNTER ? `${SPOTS_LEFT} spots remaining` : `Only ${FOUNDING_TOTAL_SPOTS} places`}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-mint">{SHOW_COUNTER ? `${SPOTS_LEFT} spots remaining` : `Founding pricing closes when the cohort is full`}</span>
             </span>
             <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-black leading-[0.95] tracking-[-0.02em] text-white mb-4">
               When they&apos;re gone,<br />they&apos;re gone.
