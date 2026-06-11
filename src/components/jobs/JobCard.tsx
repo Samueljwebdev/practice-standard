@@ -3,11 +3,13 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import type { Job } from "@/types/database"
 import { PROFESSIONS, JOB_TYPES } from "@/lib/constants"
+import { PROFESSION_CONTENT } from "@/lib/profession-content"
 
 interface Props { job: Job }
 
-function formatSalary(min: number | null, max: number | null): string {
-  if (!min && !max) return "Salary negotiable"
+// Real salary if scraped; otherwise null (caller falls back to a labelled benchmark, then nothing).
+function formatSalary(min: number | null, max: number | null): string | null {
+  if (!min && !max) return null
   if (min && max) return `£${(min / 1000).toFixed(0)}k – £${(max / 1000).toFixed(0)}k`
   if (min) return `From £${(min / 1000).toFixed(0)}k`
   return `Up to £${(max! / 1000).toFixed(0)}k`
@@ -20,6 +22,8 @@ export function JobCard({ job }: Props) {
   const practiceName = isExternal
     ? (job.external_org_name ?? "Healthcare practice")
     : ((job as Job & { practices?: { name?: string } }).practices?.name ?? "Practice")
+  const realSalary = formatSalary(job.salary_min, job.salary_max)
+  const benchmark = PROFESSION_CONTENT[job.profession]?.salaryRange ?? null
 
   return (
     <Link href={`/jobs/${job.slug}`}>
@@ -43,15 +47,19 @@ export function JobCard({ job }: Props) {
             </span>
             {isExternal && (
               <span className="inline-flex items-center rounded-full bg-navy/5 px-2.5 py-0.5 text-[9px] font-medium text-brand-slate/70 border border-navy/8">
-                Sourced from the web
+                Listed from careers page
               </span>
             )}
           </div>
         </div>
 
         <div className="flex items-center gap-2.5 mt-3.5 pt-3.5 border-t border-navy/6">
-          <span className="text-sm font-semibold text-navy">{formatSalary(job.salary_min, job.salary_max)}</span>
-          <span className="text-navy/20 text-xs">·</span>
+          {realSalary ? (
+            <span className="text-sm font-semibold text-navy">{realSalary}</span>
+          ) : benchmark ? (
+            <span className="text-sm font-medium text-navy/70">{benchmark} <span className="text-[10px] font-normal text-brand-slate/60">typical</span></span>
+          ) : null}
+          {(realSalary || benchmark) && <span className="text-navy/20 text-xs">·</span>}
           <span className="text-xs text-brand-slate">{professionLabel}</span>
         </div>
       </motion.div>

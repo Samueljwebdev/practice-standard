@@ -80,10 +80,11 @@ function toRegion(area: string[] | undefined, displayName: string | undefined): 
 const strip = (s: string) => (s || "").replace(/<[^>]*>/g, " ").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim()
 const slugify = (s: string) => strip(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70)
 
-async function fetchPage(appId: string, appKey: string, what: string, page: number) {
+async function fetchPage(appId: string, appKey: string, what: string, page: number, where?: string) {
   const u = new URL(`https://api.adzuna.com/v1/api/jobs/gb/search/${page}`)
   u.searchParams.set("app_id", appId); u.searchParams.set("app_key", appKey)
   u.searchParams.set("results_per_page", "50"); u.searchParams.set("what", what)
+  if (where) { u.searchParams.set("where", where); u.searchParams.set("distance", "25") }
   u.searchParams.set("max_days_old", "45"); u.searchParams.set("content-type", "application/json")
   const r = await fetch(u, { signal: AbortSignal.timeout(15000) })
   if (!r.ok) return []
@@ -91,31 +92,47 @@ async function fetchPage(appId: string, appKey: string, what: string, page: numb
   return (j.results || []) as any[]
 }
 
+// Wedge: aesthetics (then vet) across the South-Coast cell — scraped FIRST so the
+// board's inventory matches the sales motion. The national pass follows for depth.
+const WEDGE_SEARCHES = ["aesthetic nurse", "aesthetic practitioner", "aesthetic doctor", "cosmetic nurse", "veterinary surgeon", "veterinary nurse"]
+const WEDGE_WHERE = ["Dorset", "Hampshire", "Wiltshire"]
+
 export async function runAggregateIngest(admin: SupabaseClient, appId: string, appKey: string) {
   const rows = new Map<string, Record<string, unknown>>()
+  const addResults = (results: any[]) => {
+    for (const it of results) {
+      const title = strip(it.title); if (!title) continue
+      const company = strip(it.company?.display_name) || "Private practice"
+      const profession = classify(title, company); if (!profession) continue
+      const city = strip((it.location?.display_name || "").split(",")[0]) || null
+      const region = toRegion(it.location?.area, it.location?.display_name)
+      const jobType = it.contract_type === "contract" ? "contract" : it.contract_time === "part_time" ? "part_time" : "permanent"
+      const slug = `${slugify(title)}-${slugify(city || region)}-ad${it.id}`
+      if (rows.has(slug)) continue
+      rows.set(slug, {
+        practice_id: null, title, profession, job_type: jobType, region, city,
+        salary_min: it.salary_min ? Math.round(it.salary_min) : null,
+        salary_max: it.salary_max ? Math.round(it.salary_max) : null,
+        description: strip(it.description).slice(0, 600) || title,
+        requirements: null, slug, status: "active", payment_status: "unpaid",
+        source: "aggregated", source_url: it.redirect_url || null,
+        external_org_name: company, external_org_url: null, noindex: true,
+        published_at: it.created || new Date().toISOString(), expires_at: null,
+      })
+    }
+  }
+
+  // 1) Wedge pass — aesthetics + vet across the South Coast, first.
+  for (const what of WEDGE_SEARCHES) {
+    for (const where of WEDGE_WHERE) {
+      addResults(await fetchPage(appId, appKey, what, 1, where))
+      await new Promise(r => setTimeout(r, 200))
+    }
+  }
+  // 2) National pass — depth across all verticals (deduped against the wedge pass).
   for (const what of SEARCHES) {
     for (let p = 1; p <= PAGES; p++) {
-      const results = await fetchPage(appId, appKey, what, p)
-      for (const it of results) {
-        const title = strip(it.title); if (!title) continue
-        const company = strip(it.company?.display_name) || "Private practice"
-        const profession = classify(title, company); if (!profession) continue
-        const city = strip((it.location?.display_name || "").split(",")[0]) || null
-        const region = toRegion(it.location?.area, it.location?.display_name)
-        const jobType = it.contract_type === "contract" ? "contract" : it.contract_time === "part_time" ? "part_time" : "permanent"
-        const slug = `${slugify(title)}-${slugify(city || region)}-ad${it.id}`
-        if (rows.has(slug)) continue
-        rows.set(slug, {
-          practice_id: null, title, profession, job_type: jobType, region, city,
-          salary_min: it.salary_min ? Math.round(it.salary_min) : null,
-          salary_max: it.salary_max ? Math.round(it.salary_max) : null,
-          description: strip(it.description).slice(0, 600) || title,
-          requirements: null, slug, status: "active", payment_status: "unpaid",
-          source: "aggregated", source_url: it.redirect_url || null,
-          external_org_name: company, external_org_url: null, noindex: true,
-          published_at: it.created || new Date().toISOString(), expires_at: null,
-        })
-      }
+      addResults(await fetchPage(appId, appKey, what, p))
       await new Promise(r => setTimeout(r, 200))
     }
   }
