@@ -10,10 +10,13 @@ import type { Metadata } from "next"
 
 export function generateMetadata(): Metadata {
   const base = getBaseUrl()
+  const title = "Private Healthcare Jobs UK | The Practice Standard"
+  const description = "Browse dental, veterinary, optometry, aesthetics, physiotherapy and private medical jobs across the UK. Permanent, part-time, locum and contract roles at private practices. Always free to apply."
   return {
-    title: "Private Healthcare Jobs UK | The Practice Standard",
-    description: "Browse dental, veterinary, optometry, aesthetics, physiotherapy and private medical jobs across the UK. Permanent, part-time, locum and contract roles at private practices. Always free to apply.",
+    title,
+    description,
     alternates: { canonical: `${base}/jobs` },
+    openGraph: { title, description, url: `${base}/jobs` },
   }
 }
 

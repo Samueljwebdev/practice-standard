@@ -23,10 +23,13 @@ const SHOW_COUNTER = FOUNDING_SPOTS_CLAIMED >= 5
 
 export function generateMetadata(): Metadata {
   const base = getBaseUrl()
+  const title = "Founding 41 | The Practice Standard — UK Private Healthcare Hiring"
+  const description = `${FOUNDING_TOTAL_SPOTS} founding practices only. Founder rate £${FOUNDING_PRICE_GBP}/month — locked for life, vs £${SUBSCRIPTION_PRICE_GBP} standard. Unlimited verified-candidate listings, no agency fees. Cancel any time.`
   return {
-    title: "Founding 41 | The Practice Standard — UK Private Healthcare Hiring",
-    description: `${FOUNDING_TOTAL_SPOTS} founding practices only. Founder rate £${FOUNDING_PRICE_GBP}/month — locked for life, vs £${SUBSCRIPTION_PRICE_GBP} standard. Unlimited verified-candidate listings, no agency fees. Cancel any time.`,
+    title,
+    description,
     alternates: { canonical: `${base}/founding` },
+    openGraph: { title, description, url: `${base}/founding` },
   }
 }
 
@@ -71,10 +74,6 @@ const FAQ = [
   {
     q: "What does a founding spot cost?",
     a: `Two options, both locked for life: £${FOUNDING_PRICE_GBP}/month (cancel any time) or £${FOUNDING_ANNUAL_PRICE_LABEL}/year (2 months free, paid annually). Both cover unlimited listings across every discipline. Standard pricing is £${SUBSCRIPTION_PRICE_GBP}/month and rising.`,
-  },
-  {
-    q: "What's the 30-day applicant guarantee?",
-    a: "Post a role in your first 30 days and if you don't get a verified applicant in that window, that month is free. We hand-match and verify candidates for founding practices — so an empty inbox is on us, not you.",
   },
   {
     q: `Why only ${FOUNDING_TOTAL_SPOTS} practices?`,
@@ -206,13 +205,6 @@ export default async function FoundingPage({ searchParams }: { searchParams: Pro
               From £{annualMonthly}/mo on annual · Locked for life · Candidates always free
             </p>
           </AnimateIn>
-
-          <AnimateIn delay={0.38}>
-            <div className="mx-auto mt-7 inline-flex items-center gap-2.5 rounded-full border border-teal/25 bg-teal/5 px-4 py-2">
-              <span className="text-teal">{CHECK}</span>
-              <span className="text-[12px] font-semibold text-navy">30-day applicant guarantee — your first verified applicant within 30 days, or that month&rsquo;s free.</span>
-            </div>
-          </AnimateIn>
         </div>
       </section>
 
@@ -320,7 +312,7 @@ export default async function FoundingPage({ searchParams }: { searchParams: Pro
           <div className="grid md:grid-cols-3 gap-4">
             {[
               { label: "Agency fee on a £45k hire", value: "£11,250", sub: "At 25% — standard placement fee", highlight: false },
-              { label: "Founder rate for 12 months", value: `£${FOUNDING_PRICE_GBP * 12}`, sub: "Unlimited listings, all disciplines", highlight: false },
+              { label: "Founder rate for 12 months", value: `£${(FOUNDING_PRICE_GBP * 12).toLocaleString("en-GB")}`, sub: "Unlimited listings, all disciplines", highlight: false },
               { label: "Your rate in year 5", value: `£${FOUNDING_PRICE_GBP}`, sub: "Still locked. It never rises.", highlight: true },
             ].map((item, i) => (
               <AnimateIn key={item.label} delay={0.08 + i * 0.06}>

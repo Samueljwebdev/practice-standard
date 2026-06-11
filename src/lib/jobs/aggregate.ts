@@ -5,6 +5,7 @@
 // full-refreshes the source='aggregated' listings.
 
 import type { SupabaseClient } from "@supabase/supabase-js"
+import { isExcludedOrg } from "./exclusions"
 
 const SEARCHES = [
   "aesthetic nurse", "aesthetic practitioner", "aesthetic doctor",
@@ -58,6 +59,7 @@ const TESTS: [RegExp, string][] = [
 
 function classify(title: string, company: string): string | null {
   if (NHS.test(title) || NHS.test(company)) return null
+  if (isExcludedOrg(company)) return null // chains, universities, hospital groups, NHS-adjacent
   if (BLOCK.test(title)) return null
   for (const [re, p] of TESTS) if (re.test(title)) return p
   return null

@@ -6,10 +6,13 @@ import type { Metadata } from "next"
 
 export function generateMetadata(): Metadata {
   const base = getBaseUrl()
+  const title = "Pricing | The Practice Standard — UK Private Healthcare Jobs"
+  const description = `Post private healthcare jobs from £${LISTING_PRICE_GBP}. Cheaper than every specialist board, covers all disciplines. Candidates always free. No agency fees.`
   return {
-    title: "Pricing | The Practice Standard — UK Private Healthcare Jobs",
-    description: `Post private healthcare jobs from £${LISTING_PRICE_GBP}. Cheaper than every specialist board, covers all disciplines. Candidates always free. No agency fees.`,
+    title,
+    description,
     alternates: { canonical: `${base}/pricing` },
+    openGraph: { title, description, url: `${base}/pricing` },
   }
 }
 
